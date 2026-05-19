@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import AddNews from "./pages/AddNews";
 import Categories from "./pages/Categories";
 import Analytics from "./pages/Analytics";
+import Ads from "./pages/Ads";
 
 import "./styles.css";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/add-news" element={<AddNews />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/ads" element={<Ads />} />
           </Routes>
         </div>
       </div>

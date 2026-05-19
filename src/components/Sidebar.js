@@ -2,11 +2,14 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, PlusCircle, Folder } from "lucide-react";
 import { BarChart3 } from "lucide-react";
+import { Megaphone } from "lucide-react";
 
 function Sidebar({ isOpen }) {
   return (
     <div className={`sidebar ${isOpen ? "show" : "hide"}`}>
-      <h2 className="logo">Corada</h2>
+      <h2 className="logo-text">
+        Korada<span className="dot">.News</span>
+      </h2>
 
       <ul>
         <li>
@@ -34,6 +37,13 @@ function Sidebar({ isOpen }) {
           <NavLink to="/analytics">
             <BarChart3 size={18} />
             <span>Analytics</span>
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/ads">
+            <Megaphone size={18} />
+            <span>Ads</span>
           </NavLink>
         </li>
       </ul>
