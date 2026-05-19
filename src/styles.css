@@ -1,3 +1,6 @@
+/* =========================
+   GLOBAL STYLES
+========================= */
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
@@ -7,7 +10,10 @@ body {
 * {
   box-sizing: border-box;
 }
-/* Sidebar */
+
+/* =========================
+   SIDEBAR
+========================= */
 .sidebar {
   width: 220px;
   height: calc(100vh - 40px);
@@ -19,8 +25,19 @@ body {
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   border: 1px solid #eee;
+  transition: transform 0.3s ease;
 }
 
+/* Sidebar show/hide */
+.sidebar.hide {
+  transform: translateX(-100%);
+}
+
+.sidebar.show {
+  transform: translateX(0);
+}
+
+/* Logo */
 .logo {
   font-size: 22px;
   font-weight: bold;
@@ -37,27 +54,30 @@ body {
   margin-bottom: 15px;
 }
 
+/* Sidebar Links */
 .sidebar a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 12px;
   border-radius: 8px;
   text-decoration: none;
-  color: #333 !important; /* 🔥 ADD THIS */
+  color: #333;
 }
 
+/* Active Link */
 .sidebar a.active {
   background: #f1f3f5;
-  color: #111;
   font-weight: 600;
-  border-left: 4px solid #e60023; /* 🔥 RED LINE */
+  border-left: 4px solid #e60023;
 }
 
+/* Hover Effect */
 .sidebar a:hover {
   background: #f5f5f5;
-  color: #111;
 }
 
-/* Footer */
+/* Sidebar Footer */
 .sidebar-footer {
   position: absolute;
   bottom: 20px;
@@ -65,15 +85,30 @@ body {
   color: #777;
 }
 
-/* Main */
+/* =========================
+   MAIN LAYOUT
+========================= */
 .main {
-  margin-left: 260px;
-  width: calc(100% - 240px); /* 🔥 ADD THIS */
+  margin-left: 220px;
+  width: calc(100% - 220px);
   min-height: 100vh;
-  background: #f5f7fb;
   padding: 20px;
+  transition: all 0.3s ease;
 }
-/* Navbar */
+
+/* Sidebar open/close effect */
+.main.open {
+  margin-left: 220px;
+}
+
+.main.closed {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* =========================
+   NAVBAR
+========================= */
 .navbar {
   height: 60px;
   background: white;
@@ -84,22 +119,32 @@ body {
   padding: 0 30px;
 }
 
-.dot {
-  color: red;
+/* Navbar sections */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-/* Right */
 .nav-right {
   display: flex;
   gap: 10px;
 }
 
+/* Hamburger menu */
+.menu-icon {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Search input */
 .nav-right input {
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
+/* Admin button */
 .admin-btn {
   background: red;
   color: white;
@@ -108,172 +153,24 @@ body {
   border-radius: 6px;
 }
 
-/* Content */
-.main {
-  margin-left: 220px; /* reduce from 240 */
-  width: calc(100% - 220px);
-}
-
+/* =========================
+   CONTENT AREA
+========================= */
 .content {
   padding: 25px 30px;
   width: 100%;
 }
 
-/* Cards */
+/* =========================
+   CARDS
+========================= */
 .card {
   background: white;
-   max-width: 800px;
+  max-width: 800px;
   padding: 25px;
   margin-top: 20px;
   border-radius: 14px;
   border: 1px solid #f0f0f0;
-}
-
-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: 500;
-  color: #333;
-}
-/* Inputs */
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-textarea {
-  height: 120px;
-}
-
-/* Input group */
-.input-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.input-group input {
-  flex: 1;
-}
-
-/* Buttons */
-button {
-  padding: 10px 16px;
-  background: #e60023;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #cc001f;
-}
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: #ccc;
-  box-shadow: none;
-}
-
-/* Navbar left */
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-/* Hamburger icon */
-.menu-icon {
-  font-size: 22px;
-  cursor: pointer;
-}
-
-/* Sidebar animation */
-.sidebar {
-  transition: transform 0.3s ease;
-}
-
-.sidebar.hide {
-  transform: translateX(-100%);
-}
-
-.sidebar.show {
-  transform: translateX(0);
-}
-
-/* Main shift */
-.main.open {
-  margin-left: 240px;
-  width: calc(100% - 240px);
-  transition: 0.3s;
-}
-
-.main.closed {
-  margin-left: 0;
-  width: 100%;
-  transition: 0.3s;
-}
-
-/* Grid wrapper */
-.grid-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-/* Right panel stack */
-.side-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Card improvements */
-.card h3, .card h4 {
-  margin-top: 0;
-}
-
-/* List style */
-.card ul {
-  padding-left: 18px;
-}
-
-.card li {
-  margin-bottom: 8px;
-}
-
-@media (max-width: 900px) {
-  .grid-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.grid-layout {
-  display: grid;
-  grid-template-columns: 3fr 1fr; /* 🔥 BIG LEFT, SMALL RIGHT */
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.main-form {
-  width: 100%;
-}
-
-.side-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-
-.sub-text {
-  color: #666;
-  margin-top: 5px;
 }
 
 /* Card header */
@@ -288,7 +185,7 @@ textarea:focus {
   justify-content: space-between;
 }
 
-/* Red left bar */
+/* Red indicator bar */
 .bar {
   width: 4px;
   height: 20px;
@@ -296,64 +193,115 @@ textarea:focus {
   border-radius: 2px;
 }
 
-/* Button */
-.primary-btn {
-  /* width: 100%; */
-  margin-top: 20px;
+/* =========================
+   FORMS & INPUTS
+========================= */
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+/* Inputs */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Textarea */
+textarea {
+  height: 120px;
+}
+
+/* Remove focus glow */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Input group */
+.input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.input-group input {
+  flex: 1;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+button {
+  padding: 10px 16px;
   background: #e60023;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #cc001f;
+}
+
+/* Primary button */
+.primary-btn {
+  margin-top: 20px;
   padding: 12px;
   border-radius: 10px;
 }
 
-/* Color picker */
-.color-picker {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
+/* =========================
+   GRID LAYOUTS
+========================= */
 
-.color {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.color.red { background: #ef4444; }
-.color.yellow { background: #f59e0b; }
-.color.green { background: #10b981; }
-.color.blue { background: #3b82f6; }
-.color.purple { background: #8b5cf6; }
-
-/* Empty state */
-.empty {
-  text-align: center;
-  color: #777;
-  padding: 40px;
-}
-
-/* Count */
-.count {
-  font-size: 14px;
-  color: #777;
-}
-
-/* Header */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Stats Grid */
-.stats-grid {
+/* Dashboard grid */
+.grid-layout {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 3fr 1fr;
   gap: 20px;
   margin-top: 20px;
 }
 
-/* Stat Card */
+/* Side panel */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Categories layout */
+.categories-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) 1fr;
+  gap: 20px;
+}
+
+/* Row layout */
+.row {
+  display: flex;
+  gap: 20px;
+}
+
+.col {
+  flex: 1;
+}
+
+/* =========================
+   STATS CARDS
+========================= */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
 .stat-card {
   background: white;
   padding: 20px;
@@ -367,11 +315,6 @@ textarea:focus {
   align-items: center;
 }
 
-.stat-card h2 {
-  margin-top: 15px;
-  font-size: 28px;
-}
-
 /* Icons */
 .icon {
   width: 35px;
@@ -382,116 +325,63 @@ textarea:focus {
   justify-content: center;
 }
 
-.icon.red { background: #fee2e2; }
-.icon.green { background: #dcfce7; }
-.icon.yellow { background: #fef9c3; }
-.icon.blue { background: #dbeafe; }
+/* =========================
+   EXTRA UI
+========================= */
 
-/* Empty State */
+/* Color picker */
+.color-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Empty state */
 .empty {
   text-align: center;
+  color: #777;
   padding: 40px;
 }
 
-.empty-icon {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
 
-.sidebar a {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* 🔥 space between icon & text */
-}
-
-.sidebar svg {
-  stroke-width: 1.5; /* thin look */
-}
-
-/* Row layout */
-.row {
-  display: flex;
-  gap: 20px;
-  margin-top: 10px;
-}
-
-.col {
-  flex: 1;
-}
-
-/* Select styling */
-select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: white;
-}
-
-/* Fix spacing */
-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: 500;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 🔥 changed */
-  gap: 20px;
-  margin-top: 20px;
-}
-
+/* Tablet */
 @media (max-width: 1000px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 1200px) {
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
+/* Mobile */
 @media (max-width: 768px) {
+  .grid-layout,
+  .categories-layout {
+    grid-template-columns: 1fr;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* Small Mobile */
 @media (max-width: 480px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.main {
-  transition: all 0.3s ease;
-}
-
-/* Sidebar open */
-.main.open {
-  margin-left: 220px;
-  width: calc(100% - 220px);
-}
-
-/* Sidebar closed */
-.main.closed {
-  margin-left: 0;
-  width: 100%;
-}
-
-.categories-layout {
-  display: grid;
-  grid-template-columns: minmax(300px, 400px) 1fr;
-  gap: 20px;
-  width: 100%;
-}
-
-@media (max-width: 900px) {
-  .categories-layout {
-    grid-template-columns: 1fr;
-  }
-}
+/* Color variants */
+.color.red { background: #ef4444; }
+.color.yellow { background: #f59e0b; }
+.color.green { background: #10b981; }
+.color.blue { background: #3b82f6; }
+.color.purple { background: #8b5cf6; }
