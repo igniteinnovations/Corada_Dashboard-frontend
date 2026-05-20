@@ -7,10 +7,15 @@ function AddNews() {
   const [preview, setPreview] = useState(null);
   const [url, setUrl] = useState("");
 
+  // ✅ FORM STATES
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
   // ✅ CATEGORY STATE
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  const [loading, setLoading] = useState(false);
 
   // ✅ FETCH CATEGORIES
   const fetchCategories = async () => {
@@ -27,12 +32,6 @@ function AddNews() {
       );
 
       setCategories(res.data.categories || []);
-
-      // set default category
-      if (res.data.categories.length > 0) {
-        setSelectedCategory(res.data.categories[0]._id);
-      }
-
     } catch (err) {
       console.log("Category fetch error:", err);
     }
@@ -48,6 +47,7 @@ function AddNews() {
     if (!selected) return;
 
     setPreview(URL.createObjectURL(selected));
+    setUrl(""); // clear URL if file used
   };
 
   // URL INPUT
@@ -55,6 +55,66 @@ function AddNews() {
     const value = e.target.value;
     setUrl(value);
     setPreview(value);
+  };
+
+  // ✅ SUBMIT NEWS
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+
+    // 🔥 VALIDATION (ALL REQUIRED)
+    if (!title.trim()) return alert("Title is required");
+    if (!content.trim()) return alert("Content is required");
+    if (!selectedCategory) return alert("Please select category");
+
+    if (mediaMode === "upload" && !preview) {
+      return alert("Please upload media");
+    }
+
+    if (mediaMode === "url" && !url.trim()) {
+      return alert("Please enter media URL");
+    }
+
+    setLoading(true);
+
+    try {
+      // 🔥 IMPORTANT: backend expects categoryName (not ID)
+      const selectedCat = categories.find(
+        (c) => c._id === selectedCategory
+      );
+
+      const mediaUrl = mediaMode === "upload" ? preview : url;
+
+      await axios.post(
+        "https://api.korada.news/api/v1/news",
+        {
+          title,
+          content,
+          mediaType,
+          mediaUrl,
+          categoryName: selectedCat?.categoryname,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("✅ News created successfully!");
+
+      // RESET
+      setTitle("");
+      setContent("");
+      setSelectedCategory("");
+      setPreview(null);
+      setUrl("");
+
+    } catch (err) {
+      console.log(err);
+      alert("❌ Failed to create news");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,7 +133,11 @@ function AddNews() {
 
           {/* Title */}
           <label>Title</label>
-          <input placeholder="Enter news title..." />
+          <input
+            placeholder="Enter news title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
           {/* Category */}
           <div className="row">
@@ -84,12 +148,10 @@ function AddNews() {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                {/* Default placeholder (important) */}
                 <option value="" disabled>
                   -- Select Category --
                 </option>
 
-                {/* If categories exist */}
                 {categories.length > 0 ? (
                   categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
@@ -102,9 +164,14 @@ function AddNews() {
               </select>
             </div>
           </div>
+
           {/* Description */}
           <label>Description</label>
-          <textarea placeholder="Enter news content..." />
+          <textarea
+            placeholder="Enter news content..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
 
           {/* MEDIA TYPE */}
           <label>Media Type</label>
@@ -177,7 +244,13 @@ function AddNews() {
             </div>
           )}
 
-          <button className="primary-btn">Add News</button>
+          <button
+            className="primary-btn"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Publishing..." : "Add News"}
+          </button>
         </div>
 
         {/* RIGHT */}

@@ -1,79 +1,68 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { getAllNews, deleteNews, editNews } from "../api/newsApi";
+import NewsItem from "../components/NewsItem";
 
 function Dashboard() {
-  const navigate = useNavigate();
+  const [news, setNews] = useState([]);
+
+  // ✅ FETCH NEWS
+  const fetchNews = async () => {
+    try {
+      const res = await getAllNews();
+      setNews(res.data.allNews || []);
+    } catch (err) {
+      console.log("Fetch error:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchNews();
+  }, []);
+
+  // ✅ DELETE
+  const handleDelete = async (id) => {
+    const confirm = window.confirm("Are you sure to delete?");
+    if (!confirm) return;
+
+    try {
+      await deleteNews(id);
+      alert("Deleted successfully");
+
+      fetchNews(); // refresh
+    } catch (err) {
+      alert("Delete failed");
+    }
+  };
+
+  // ✅ EDIT
+  const handleEdit = async (id, updatedData) => {
+  try {
+    await editNews(id, updatedData);
+    alert("Updated successfully");
+
+    fetchNews(); // refresh
+  } catch (err) {
+    alert("Update failed");
+  }
+};
+
   return (
     <>
-      {/* Header */}
-      <div className="dashboard-header">
-        <div>
-          <h1>Dashboard</h1>
-          <p className="sub-text">Overview of your news platform</p>
-        </div>
+      <h1>Latest News</h1>
 
-        <button
-          className="primary-btn"
-          onClick={() => navigate("/add-news")}
-        >
-          + Add News
-        </button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="stats-grid">
-
-        <div className="stat-card">
-          <div className="stat-top">
-            <span>Total News</span>
-            <div className="icon red">📰</div>
-          </div>
-          <h2>0</h2>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-top">
-            <span>Published</span>
-            <div className="icon green">📈</div>
-          </div>
-          <h2>0</h2>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-top">
-            <span>Drafts</span>
-            <div className="icon yellow">📄</div>
-          </div>
-          <h2>0</h2>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-top">
-            <span>Categories</span>
-            <div className="icon blue">📁</div>
-          </div>
-          <h2>4</h2>
-        </div>
-
-      </div>
-
-      {/* Recent News */}
-      <div className="card">
-        <div className="card-header space-between">
-          <h3>Recent News</h3>
-          <span className="count">0 total</span>
-        </div>
-
-        <div className="empty">
-          <div className="empty-icon">🗂️</div>
-          <p>No news yet. Create your first article.</p>
-          <button
-            className="primary-btn"
-            onClick={() => navigate("/add-news")}
-          >
-            + Add News
-          </button>
-        </div>
+      <div className="news-grid">
+        {news.length === 0 ? (
+          <p>No news available</p>
+        ) : (
+          news.map((item) => (
+            <NewsItem
+              key={item._id}
+              item={item}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          ))
+        )}
       </div>
     </>
   );
