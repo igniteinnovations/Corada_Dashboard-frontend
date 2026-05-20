@@ -581,3 +581,24 @@ input:focus {
 .color.active {
   border: 3px solid black;
 }
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.category-item input {
+  padding: 6px;
+}
+
+.actions button {
+  margin-left: 5px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}

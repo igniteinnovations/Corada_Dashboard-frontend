@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import CategoryItem from "../components/CategoryItem";
 
 function Categories() {
   const [name, setName] = useState("");
@@ -24,13 +25,12 @@ function Categories() {
       );
 
       setCategories(res.data.categories || []);
-      console.log(res.data.categories);
     } catch (err) {
       console.log("Fetch error:", err);
     }
   };
 
-  // ✅ RUN ON LOAD
+  // ✅ LOAD ON START
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -54,7 +54,7 @@ function Categories() {
         "https://api.korada.news/api/v1/categories/create",
         {
           categoryname: name,
-          color: color, // optional if backend supports
+          color: color,
         },
         {
           headers: {
@@ -66,14 +66,11 @@ function Categories() {
       setSuccess("Category added successfully!");
       setName("");
 
-      // 🔥 Refresh instantly
-      fetchCategories();
+      fetchCategories(); // 🔥 refresh
 
     } catch (err) {
       if (err.response?.status === 409) {
         setError("Category already exists");
-      } else if (err.response?.status === 401) {
-        setError("Unauthorized - Please login again");
       } else {
         setError("Something went wrong");
       }
@@ -89,16 +86,16 @@ function Categories() {
 
       <div className="categories-layout">
 
-        {/* LEFT CARD */}
+        {/* LEFT */}
         <div className="card">
           <div className="card-header">
             <div className="bar"></div>
             <h3>New Category</h3>
           </div>
 
-          {/* ERROR / SUCCESS */}
-          {error && <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>}
-          {success && <p style={{ color: "green", marginBottom: "10px" }}>{success}</p>}
+          {/* Messages */}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {success && <p style={{ color: "green" }}>{success}</p>}
 
           <label>Name</label>
           <input
@@ -127,7 +124,7 @@ function Categories() {
           </button>
         </div>
 
-        {/* RIGHT CARD */}
+        {/* RIGHT */}
         <div className="card">
           <div className="card-header space-between">
             <h3>All Categories</h3>
@@ -139,21 +136,11 @@ function Categories() {
           ) : (
             <ul className="category-list">
               {categories.map((cat) => (
-                <li key={cat._id} className="category-item">
-                  {/* 🎨 optional color dot */}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      background: cat.color || "#ccc",
-                      marginRight: "8px",
-                    }}
-                  ></span>
-
-                  {cat.categoryname}
-                </li>
+                <CategoryItem
+                  key={cat._id}
+                  cat={cat}
+                  refresh={fetchCategories}
+                />
               ))}
             </ul>
           )}
