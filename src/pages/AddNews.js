@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 
 function AddNews() {
+  const [mediaType, setMediaType] = useState("image");
+  const [mediaMode, setMediaMode] = useState("upload");
+  const [preview, setPreview] = useState(null);
+  const [url, setUrl] = useState("");
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (!selected) return;
+
+    setPreview(URL.createObjectURL(selected));
+  };
+
+  const handleUrlChange = (e) => {
+    const value = e.target.value;
+    setUrl(value);
+    setPreview(value);
+  };
+
   return (
     <>
       <h1>Add News</h1>
 
       <div className="grid-layout">
 
-        {/* LEFT SIDE */}
+        {/* LEFT */}
         <div className="card main-form">
 
           <div className="card-header">
@@ -19,7 +37,7 @@ function AddNews() {
           <label>Title</label>
           <input placeholder="Enter news title..." />
 
-          {/* Row (Category + Status) */}
+          {/* Category + Status */}
           <div className="row">
             <div className="col">
               <label>Category</label>
@@ -31,18 +49,83 @@ function AddNews() {
               </select>
             </div>
 
-            <div className="col">
-              <label>Status</label>
-              <select>
-                <option>Draft</option>
-                <option>Published</option>
-              </select>
-            </div>
+            
           </div>
 
           {/* Description */}
           <label>Description</label>
           <textarea placeholder="Enter news content..." />
+
+          {/* MEDIA TYPE */}
+          <label>Media Type</label>
+          <select
+            value={mediaType}
+            onChange={(e) => {
+              setMediaType(e.target.value);
+              setPreview(null);
+              setUrl("");
+            }}
+          >
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+          </select>
+
+          {/* TOGGLE */}
+          <label>Upload Method</label>
+          <div className="toggle-mode">
+            <button
+              type="button"
+              className={mediaMode === "upload" ? "active" : ""}
+              onClick={() => {
+                setMediaMode("upload");
+                setPreview(null);
+              }}
+            >
+              Upload File
+            </button>
+
+            <button
+              type="button"
+              className={mediaMode === "url" ? "active" : ""}
+              onClick={() => {
+                setMediaMode("url");
+                setPreview(null);
+              }}
+            >
+              Paste URL
+            </button>
+          </div>
+
+          {/* CONDITIONAL UI */}
+          {mediaMode === "upload" ? (
+            <>
+              <label>Upload {mediaType}</label>
+              <label className="upload-box">
+                Click to Upload {mediaType}
+                <input type="file" onChange={handleFileChange} hidden />
+              </label>
+            </>
+          ) : (
+            <>
+              <label>Paste {mediaType} URL</label>
+              <input
+                placeholder={`Enter ${mediaType} URL`}
+                value={url}
+                onChange={handleUrlChange}
+              />
+            </>
+          )}
+
+          {/* PREVIEW */}
+          {preview && (
+            <div className="preview-box">
+              {mediaType === "image" ? (
+                <img src={preview} alt="preview" />
+              ) : (
+                <video src={preview} controls />
+              )}
+            </div>
+          )}
 
           <button className="primary-btn">Add News</button>
         </div>

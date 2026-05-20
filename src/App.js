@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation
+} from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
@@ -9,29 +14,93 @@ import AddNews from "./pages/AddNews";
 import Categories from "./pages/Categories";
 import Analytics from "./pages/Analytics";
 import Ads from "./pages/Ads";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./styles.css";
 
-function App() {
+function Layout() {
   const [isOpen, setIsOpen] = useState(true);
+  const location = useLocation();
+
+  // 🔥 Hide sidebar/navbar on auth pages
+  const hideLayout =
+    location.pathname === "/login" ||
+    location.pathname === "/register";
 
   return (
-    <Router>
-      <Sidebar isOpen={isOpen} />
+    <>
+      {!hideLayout && <Sidebar isOpen={isOpen} />}
 
       <div className={`main ${isOpen ? "open" : "closed"}`}>
-        <Navbar toggle={() => setIsOpen(!isOpen)} />
+        {!hideLayout && (
+          <Navbar toggle={() => setIsOpen(!isOpen)} />
+        )}
 
         <div className="content">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/add-news" element={<AddNews />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/ads" element={<Ads />} />
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/add-news"
+              element={
+                <ProtectedRoute>
+                  <AddNews />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/categories"
+              element={
+                <ProtectedRoute>
+                  <Categories />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <Analytics />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/ads"
+              element={
+                <ProtectedRoute>
+                  <Ads />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Layout />
     </Router>
   );
 }
