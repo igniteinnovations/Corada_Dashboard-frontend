@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -6,6 +7,42 @@ function AddNews() {
   const [preview, setPreview] = useState(null);
   const [url, setUrl] = useState("");
 
+  // ✅ CATEGORY STATE
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+
+  // ✅ FETCH CATEGORIES
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        "https://api.korada.news/api/v1/categories",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setCategories(res.data.categories || []);
+
+      // set default category
+      if (res.data.categories.length > 0) {
+        setSelectedCategory(res.data.categories[0]._id);
+      }
+
+    } catch (err) {
+      console.log("Category fetch error:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // FILE UPLOAD
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
     if (!selected) return;
@@ -13,6 +50,7 @@ function AddNews() {
     setPreview(URL.createObjectURL(selected));
   };
 
+  // URL INPUT
   const handleUrlChange = (e) => {
     const value = e.target.value;
     setUrl(value);
@@ -37,21 +75,33 @@ function AddNews() {
           <label>Title</label>
           <input placeholder="Enter news title..." />
 
-          {/* Category + Status */}
+          {/* Category */}
           <div className="row">
             <div className="col">
               <label>Category</label>
-              <select>
-                <option>Technology</option>
-                <option>Sports</option>
-                <option>Business</option>
-                <option>Entertainment</option>
+
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                {/* Default placeholder (important) */}
+                <option value="" disabled>
+                  -- Select Category --
+                </option>
+
+                {/* If categories exist */}
+                {categories.length > 0 ? (
+                  categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.categoryname}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading categories...</option>
+                )}
               </select>
             </div>
-
-            
           </div>
-
           {/* Description */}
           <label>Description</label>
           <textarea placeholder="Enter news content..." />
@@ -96,7 +146,7 @@ function AddNews() {
             </button>
           </div>
 
-          {/* CONDITIONAL UI */}
+          {/* CONDITIONAL */}
           {mediaMode === "upload" ? (
             <>
               <label>Upload {mediaType}</label>
@@ -130,7 +180,7 @@ function AddNews() {
           <button className="primary-btn">Add News</button>
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* RIGHT */}
         <div className="side-panel">
           <div className="card">
             <h4>Tips</h4>
