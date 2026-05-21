@@ -17,15 +17,28 @@ function Login() {
       const data = await res.json();
 
       if (data.success) {
-        localStorage.setItem("token", data.token); // 🔥 save token
+        // ✅ STORE TOKEN
+        localStorage.setItem("token", data.token);
+
+        // ✅ STORE USER (NEW 🔥)
+        // If backend sends user → use it
+        // else fallback using email
+        const userData = data.user || {
+          name: email.split("@")[0],
+          email: email
+        };
+
+        localStorage.setItem("user", JSON.stringify(userData));
+
         alert("Login successful");
-        window.location.href = "/"; // redirect to dashboard
+        window.location.href = "/"; // redirect
       } else {
         alert(data.message);
       }
 
     } catch (err) {
       console.error(err);
+      alert("Something went wrong");
     }
   };
 

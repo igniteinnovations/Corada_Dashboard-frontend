@@ -4,8 +4,10 @@ function Header({ toggle }) {  // ✅ FIX: receive toggle here
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const username = "Admin User";
-  const email = "admin@corada.news";
+ const user = JSON.parse(localStorage.getItem("user")) || {};
+
+const username = user.name || "Admin User";
+const email = user.email || "admin@corada.news";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -31,7 +33,7 @@ function Header({ toggle }) {  // ✅ FIX: receive toggle here
       <div className="header-left">
         <span className="menu" onClick={toggle}>☰</span> {/* ✅ NOW WORKS */}
         <h2 className="logo">
-          corada<span className="dot">.news</span>
+          Korada<span className="dot">.News</span>
         </h2>
       </div>
 
@@ -78,7 +80,7 @@ function Header({ toggle }) {  // ✅ FIX: receive toggle here
               <div className="divider"></div>
 
               <button className="logout-btn" onClick={handleLogout}>
-                ↩ Logout
+                 Logout
               </button>
 
             </div>
