@@ -42,7 +42,7 @@ body {
   background: #ffffff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   border: 1px solid #eee;
   transition: transform 0.3s ease;
 }
@@ -111,7 +111,8 @@ body {
 }
 
 .dot {
-  color: #e60023; /* 🔥 red */
+  color: #e60023;
+  /* 🔥 red */
 }
 
 /* =========================
@@ -233,7 +234,9 @@ label {
 }
 
 /* Inputs */
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
@@ -392,6 +395,7 @@ button:hover {
 
 /* Mobile */
 @media (max-width: 768px) {
+
   .grid-layout,
   .categories-layout {
     grid-template-columns: 1fr;
@@ -410,11 +414,25 @@ button:hover {
 }
 
 /* Color variants */
-.color.red { background: #ef4444; }
-.color.yellow { background: #f59e0b; }
-.color.green { background: #10b981; }
-.color.blue { background: #3b82f6; }
-.color.purple { background: #8b5cf6; }
+.color.red {
+  background: #ef4444;
+}
+
+.color.yellow {
+  background: #f59e0b;
+}
+
+.color.green {
+  background: #10b981;
+}
+
+.color.blue {
+  background: #3b82f6;
+}
+
+.color.purple {
+  background: #8b5cf6;
+}
 
 
 /* Upload Box */
@@ -616,7 +634,7 @@ input:focus {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   position: relative;
   transition: 0.2s;
 }
@@ -629,27 +647,32 @@ input:focus {
 .news-img img,
 .news-img video {
   width: 100%;
-  height: 120px;   /* 🔥 reduced from 160px */
+  height: 120px;
+  /* 🔥 reduced from 160px */
   object-fit: cover;
 }
 
 /* CONTENT */
 .news-content {
-  padding: 8px 10px;  /* 🔥 reduced padding */
+  padding: 8px 10px;
+  /* 🔥 reduced padding */
 }
 
 .news-content h3 {
-  font-size: 14px;   /* 🔥 smaller title */
+  font-size: 14px;
+  /* 🔥 smaller title */
   color: #007bff;
   margin-bottom: 4px;
   line-height: 1.2;
 }
 
 .news-content p {
-  font-size: 12px;   /* 🔥 smaller text */
+  font-size: 12px;
+  /* 🔥 smaller text */
   color: #555;
   line-height: 1.3;
-  max-height: 32px;  /* 🔥 limit text */
+  max-height: 32px;
+  /* 🔥 limit text */
   overflow: hidden;
 }
 
@@ -663,7 +686,7 @@ input:focus {
 }
 
 .news-actions button {
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   border: none;
   color: white;
   padding: 4px;
@@ -673,7 +696,7 @@ input:focus {
 }
 
 .news-actions .delete-btn {
-  background: rgba(255,0,0,0.7);
+  background: rgba(255, 0, 0, 0.7);
 }
 
 /* SCROLL CONTAINER */
@@ -806,7 +829,7 @@ input:focus {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1034,6 +1057,7 @@ textarea {
     min-height: 100px;
   }
 }
+
 .sidebar .icon {
   display: flex;
   align-items: center;
@@ -1068,7 +1092,8 @@ textarea {
 /* 🔥 CENTER THE FORM */
 .centered-card {
   max-width: 900px;
-  margin: 30px auto;   /* center + spacing */
+  margin: 30px auto;
+  /* center + spacing */
   width: 100%;
 }
 
@@ -1101,7 +1126,7 @@ textarea {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: flex-end;
   z-index: 999;
@@ -1124,9 +1149,14 @@ textarea {
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}   
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
 
 /* BUTTON */
 .admin-btn {
@@ -1174,7 +1204,7 @@ textarea {
   width: 240px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   padding: 12px;
   z-index: 100;
 }
@@ -1225,6 +1255,7 @@ textarea {
 .logout-icon {
   font-size: 16px;
 }
+
 .header-right {
   display: flex;
   align-items: center;
@@ -1330,7 +1361,7 @@ textarea {
   width: 240px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   padding: 12px;
   z-index: 100;
 }
@@ -1370,6 +1401,7 @@ textarea {
 .logout-btn:hover {
   background: #f5f5f5;
 }
+
 .sidebar {
   width: 220px;
   transition: 0.3s;
@@ -1392,10 +1424,10 @@ textarea {
 }
 
 /* MAIN LAYOUT */
-.main {
+/* .main {
   margin-left: 250px;
   transition: all 0.3s ease;
-}
+} */
 
 /* WHEN SIDEBAR CLOSED */
 .main.closed {
@@ -1417,6 +1449,7 @@ textarea {
 .content {
   padding: 20px;
 }
+
 .sidebar {
   position: fixed;
   height: 100vh;
@@ -1428,7 +1461,7 @@ textarea {
   margin-left: 250px;
 }
 
-.sidebar.hide + .main {
+.sidebar.hide+.main {
   margin-left: 80px;
 }
 
@@ -1440,7 +1473,8 @@ textarea {
   width: 250px;
   background: #fff;
   transition: all 0.3s ease;
-  z-index: 1000;
+  /* z-index: 1000; */
+  overflow: hidden;
 }
 
 .sidebar.hide {
@@ -1450,18 +1484,21 @@ textarea {
 
 .main {
   margin-left: 250px;
-  transition: all 0.3s ease;
   width: calc(100% - 250px);
+  transition: all 0.3s ease;
 }
 
+/* WHEN SIDEBAR CLOSED */
 .main.closed {
   margin-left: 80px;
   width: calc(100% - 80px);
 }
+
 .content {
   padding: 20px;
   width: 100%;
 }
+
 .header {
   width: 100%;
   position: relative;
@@ -1513,7 +1550,7 @@ textarea {
   width: 230px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   z-index: 999;
 }
@@ -1544,7 +1581,8 @@ textarea {
   width: 100%;
   padding: 12px;
   border: none;
-  background: transparent; /* clean base */
+  background: transparent;
+  /* clean base */
   color: #111;
   font-size: 14px;
   text-align: left;

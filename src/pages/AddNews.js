@@ -59,63 +59,106 @@ function AddNews() {
 
   // ✅ SUBMIT NEWS
   const handleSubmit = async () => {
-    const token = localStorage.getItem("token");
+  console.log("🚀 handleSubmit triggered");
 
-    // 🔥 VALIDATION (ALL REQUIRED)
-    if (!title.trim()) return alert("Title is required");
-    if (!content.trim()) return alert("Content is required");
-    if (!selectedCategory) return alert("Please select category");
+  const token = localStorage.getItem("token");
+  console.log("🔑 Token:", token);
 
-    if (mediaMode === "upload" && !preview) {
-      return alert("Please upload media");
-    }
+  // 🔥 VALIDATION (ALL REQUIRED)
+  if (!title.trim()) {
+    console.log("❌ Validation failed: Title missing");
+    return alert("Title is required");
+  }
 
-    if (mediaMode === "url" && !url.trim()) {
-      return alert("Please enter media URL");
-    }
+  if (!content.trim()) {
+    console.log("❌ Validation failed: Content missing");
+    return alert("Content is required");
+  }
 
-    setLoading(true);
+  if (!selectedCategory) {
+    console.log("❌ Validation failed: Category not selected");
+    return alert("Please select category");
+  }
 
-    try {
-      // 🔥 IMPORTANT: backend expects categoryName (not ID)
-      const selectedCat = categories.find(
-        (c) => c._id === selectedCategory
-      );
+  if (mediaMode === "upload" && !preview) {
+    console.log("❌ Validation failed: No uploaded media");
+    return alert("Please upload media");
+  }
 
-      const mediaUrl = mediaMode === "upload" ? preview : url;
+  if (mediaMode === "url" && !url.trim()) {
+    console.log("❌ Validation failed: URL missing");
+    return alert("Please enter media URL");
+  }
 
-      await axios.post(
-        "https://api.korada.news/api/v1/news",
-        {
-          title,
-          content,
-          mediaType,
-          mediaUrl,
-          categoryName: selectedCat?.categoryname,
+  setLoading(true);
+  console.log("⏳ Loading started");
+
+  try {
+    console.log("📦 Categories list:", categories);
+    console.log("📌 Selected Category ID:", selectedCategory);
+
+    // 🔥 IMPORTANT: backend expects categoryName (not ID)
+    const selectedCat = categories.find(
+      (c) => c._id === selectedCategory
+    );
+
+    console.log("✅ Matched Category Object:", selectedCat);
+
+    const mediaUrl = mediaMode === "upload" ? preview : url;
+    console.log("🖼️ Media Mode:", mediaMode);
+    console.log("🔗 Media URL:", mediaUrl);
+
+    const payload = {
+      title,
+      content,
+      mediaType,
+      mediaUrl,
+      categoryName: selectedCat?.categoryname,
+    };
+
+    console.log("📤 Payload being sent:", payload);
+
+    const response = await axios.post(
+      "https://api.korada.news/api/v1/news",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      }
+    );
 
-      alert("✅ News created successfully!");
+    console.log("🎉 API Response:", response.data);
 
-      // RESET
-      setTitle("");
-      setContent("");
-      setSelectedCategory("");
-      setPreview(null);
-      setUrl("");
+    alert("✅ News created successfully!");
 
-    } catch (err) {
-      console.log(err);
-      alert("❌ Failed to create news");
-    } finally {
-      setLoading(false);
+    // RESET
+    setTitle("");
+    setContent("");
+    setSelectedCategory("");
+    setPreview(null);
+    setUrl("");
+
+    console.log("🔄 Form reset complete");
+
+  } catch (err) {
+    console.log("🔥 ERROR occurred:", err);
+
+    if (err.response) {
+      console.log("📛 Server Response Error:", err.response.data);
+      console.log("📛 Status Code:", err.response.status);
+    } else if (err.request) {
+      console.log("📡 No response received:", err.request);
+    } else {
+      console.log("⚠️ Error Message:", err.message);
     }
-  };
+
+    alert("❌ Failed to create news");
+  } finally {
+    setLoading(false);
+    console.log("✅ Loading ended");
+  }
+};
 
   return (
     <>

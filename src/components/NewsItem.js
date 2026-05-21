@@ -73,6 +73,7 @@ function NewsItem({ item, onDelete, onEdit }) {
             >
               🗑️
             </button>
+            
           </>
         )}
       </div>

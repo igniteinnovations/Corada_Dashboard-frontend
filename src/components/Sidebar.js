@@ -1,11 +1,8 @@
 import React from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { LayoutDashboard, PlusCircle, Folder, BarChart3, Megaphone, Sparkles } from "lucide-react";
-// ❌ removed: FiSparkles
 
 function Sidebar({ isOpen }) {
-  const navigate = useNavigate();
-  const location = useLocation();
 
   return (
     <div className={`sidebar ${isOpen ? "show" : "hide"}`}>
@@ -36,26 +33,26 @@ function Sidebar({ isOpen }) {
         </li>
 
         <li>
-          <NavLink to="/analytics">
-            <BarChart3 size={18} />
-            <span>Analytics</span>
-          </NavLink>
-        </li>
-
-        <li>
           <NavLink to="/ads">
             <Megaphone size={18} />
             <span>Ads</span>
           </NavLink>
         </li>
 
-        {/* ✅ Weekend Experiences */}
         <li>
-  <NavLink to="/weekend-experiences">
-    <Sparkles size={18} />
-    <span>Weekend Experiences</span>
-  </NavLink>
-</li>
+          <NavLink to="/weekend-experiences">
+            <Sparkles size={18} />
+            <span>Weekend Experiences</span>
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink to="/analytics">
+            <BarChart3 size={18} />
+            <span>Analytics</span>
+          </NavLink>
+        </li>
+
       </ul>
 
       <div className="sidebar-footer">

@@ -4,6 +4,7 @@ import axios from "axios";
 function WeekendExperiences() {
     const [showForm, setShowForm] = useState(false);
     const [experiences, setExperiences] = useState([]);
+    const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
         title: "",
@@ -46,6 +47,50 @@ function WeekendExperiences() {
         fetchExperiences();
     }, []);
 
+    // ✅ DELETE
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem("token");
+
+        if (!window.confirm("Delete this experience?")) return;
+
+        try {
+            await axios.delete(
+                `https://api.korada.news/api/v1/weekend-experiences/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            alert("Deleted successfully");
+            fetchExperiences();
+        } catch {
+            alert("Delete failed");
+        }
+    };
+
+    // ✅ EDIT (prefill FULL FORM)
+    const handleEdit = (exp) => {
+        setForm({
+            title: exp.title || "",
+            description: exp.description || "",
+            location: exp.location || "",
+            distance: exp.distance || "",
+            duration: exp.duration || "",
+            price: exp.price || "",
+            rating: exp.rating || "",
+            tags: exp.tags ? exp.tags.join(", ") : "",
+            mediaType: exp.mediaType || "image",
+            mediaUrl: exp.mediaUrl || "",
+            isFeatured: exp.isFeatured || false,
+        });
+
+        setEditingId(exp.experienceId); // 🔥 IMPORTANT
+        setShowForm(true);
+    };
+
+    // ✅ CREATE + UPDATE (FULL PAYLOAD)
     const handleSubmit = async () => {
         const token = localStorage.getItem("token");
 
@@ -66,22 +111,41 @@ function WeekendExperiences() {
         setLoading(true);
 
         try {
-            await axios.post(
-                "https://api.korada.news/api/v1/weekend-experiences",
-                {
-                    ...form,
-                    rating: Number(form.rating),
-                    tags: form.tags.split(",").map((t) => t.trim()),
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const payload = {
+                ...form,
+                rating: Number(form.rating),
+                tags: form.tags.split(",").map((t) => t.trim()),
+            };
 
-            alert("✅ Experience created!");
+            if (editingId) {
+                // ✏️ UPDATE
+                await axios.put(
+                    `https://api.korada.news/api/v1/weekend-experiences/${editingId}`,
+                    payload,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
+                alert("✅ Updated successfully");
+            } else {
+                // ➕ CREATE
+                await axios.post(
+                    "https://api.korada.news/api/v1/weekend-experiences",
+                    payload,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                alert("✅ Experience created!");
+            }
+
+            // RESET
             setForm({
                 title: "",
                 description: "",
@@ -96,11 +160,12 @@ function WeekendExperiences() {
                 isFeatured: false,
             });
 
+            setEditingId(null);
             setShowForm(false);
             fetchExperiences();
 
         } catch {
-            alert("❌ Failed to create experience");
+            alert("❌ Operation failed");
         } finally {
             setLoading(false);
         }
@@ -119,31 +184,20 @@ function WeekendExperiences() {
 
                 <button
                     className="primary-btn"
-                    onClick={() => setShowForm(true)}
+                    onClick={() => {
+                        setEditingId(null);
+                        setShowForm(true);
+                    }}
                 >
                     + New Experience
                 </button>
-            </div>
-
-            {/* STATS */}
-            <div className="stats-grid">
-                <div className="stat-card"><span>TOTAL</span><h2>{experiences.length}</h2></div>
-                <div className="stat-card"><span>FEATURED</span><h2>{experiences.filter(e => e.isFeatured).length}</h2></div>
-                <div className="stat-card"><span>AVG RATING</span><h2>
-                    {experiences.length
-                        ? (experiences.reduce((a, b) => a + (b.rating || 0), 0) / experiences.length).toFixed(1)
-                        : "—"}
-                </h2></div>
-                <div className="stat-card"><span>LOCATIONS</span><h2>
-                    {[...new Set(experiences.map(e => e.location))].length}
-                </h2></div>
             </div>
 
             {/* LIST */}
             <div className="card">
                 <div className="card-header space-between">
                     <h3>All Experiences</h3>
-                    <span className="count">{experiences.length} total</span>
+                    <span>{experiences.length} total</span>
                 </div>
 
                 {experiences.length === 0 ? (
@@ -152,61 +206,68 @@ function WeekendExperiences() {
                     <div className="ads-scroll">
                         {experiences.map((exp) => (
                             <div key={exp._id} className="ad-card">
+
                                 <img src={exp.mediaUrl} alt="exp" />
 
                                 <div className="ad-info">
                                     <h4>{exp.title}</h4>
-
-                                    <p style={{ fontSize: "12px", color: "#666" }}>
-                                        📍 {exp.location}
-                                    </p>
-
-                                    <p style={{ fontSize: "12px", color: "#666" }}>
-                                        ⭐ {exp.rating}
-                                    </p>
+                                    <p>📍 {exp.location}</p>
+                                    <p>⭐ {exp.rating}</p>
 
                                     {exp.isFeatured && (
-                                        <span style={{ color: "green", fontSize: "12px" }}>
+                                        <span style={{ color: "green" }}>
                                             ● Featured
                                         </span>
                                     )}
                                 </div>
+
+                                {/* 🔥 ACTIONS */}
+                                <div className="ad-actions">
+                                    <button onClick={() => handleEdit(exp)}>✏️</button>
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() => handleDelete(exp.experienceId)}
+                                    >
+                                        🗑
+                                    </button>
+                                </div>
+
                             </div>
                         ))}
                     </div>
                 )}
             </div>
 
-            {/* ✅ RIGHT SIDE DRAWER */}
+            {/* DRAWER (FULL FORM PRESERVED) */}
             {showForm && (
                 <div className="drawer-overlay" onClick={() => setShowForm(false)}>
-                    <div
-                        className="drawer"
-                        onClick={(e) => e.stopPropagation()}
-                    >
+                    <div className="drawer" onClick={(e) => e.stopPropagation()}>
+
                         <div className="drawer-header">
-                            <h3>Create Weekend Experience</h3>
+                            <h3>
+                                {editingId ? "Edit Experience" : "Create Experience"}
+                            </h3>
                             <button onClick={() => setShowForm(false)}>✖</button>
                         </div>
 
                         <div className="weekend-grid">
 
-                            <input name="title" placeholder="Title" value={form.title} onChange={handleChange} />
-                            <input name="location" placeholder="Location" value={form.location} onChange={handleChange} />
-                            <input name="distance" placeholder="Distance" value={form.distance} onChange={handleChange} />
-                            <input name="duration" placeholder="Duration" value={form.duration} onChange={handleChange} />
-                            <input name="price" placeholder="Price" value={form.price} onChange={handleChange} />
-                            <input name="rating" type="number" placeholder="Rating" value={form.rating} onChange={handleChange} />
+                            <input name="title" value={form.title} onChange={handleChange} placeholder="Title" />
+                            <input name="location" value={form.location} onChange={handleChange} placeholder="Location" />
+                            <input name="distance" value={form.distance} onChange={handleChange} placeholder="Distance" />
+                            <input name="duration" value={form.duration} onChange={handleChange} placeholder="Duration" />
+                            <input name="price" value={form.price} onChange={handleChange} placeholder="Price" />
+                            <input name="rating" type="number" value={form.rating} onChange={handleChange} placeholder="Rating" />
 
                             <select name="mediaType" value={form.mediaType} onChange={handleChange}>
                                 <option value="image">Image</option>
                                 <option value="video">Video</option>
                             </select>
 
-                            <input name="mediaUrl" placeholder="Media URL" value={form.mediaUrl} onChange={handleChange} />
-                            <input name="tags" placeholder="Tags (comma separated)" value={form.tags} onChange={handleChange} />
+                            <input name="mediaUrl" value={form.mediaUrl} onChange={handleChange} placeholder="Media URL" />
+                            <input name="tags" value={form.tags} onChange={handleChange} placeholder="Tags (comma separated)" />
 
-                            <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} />
+                            <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" />
 
                         </div>
 
@@ -226,11 +287,26 @@ function WeekendExperiences() {
                             disabled={loading}
                             style={{ marginTop: "15px" }}
                         >
-                            {loading ? "Creating..." : "Create Experience"}
+                            {editingId ? "Update Experience" : "Create Experience"}
                         </button>
+
                     </div>
                 </div>
             )}
+
+            {/* 🔥 CSS */}
+            <style>{`
+                .ad-actions {
+                    display: flex;
+                    gap: 8px;
+                    margin-left: auto;
+                }
+
+                .delete-btn {
+                    background: #ef4444;
+                    color: white;
+                }
+            `}</style>
         </>
     );
 }
