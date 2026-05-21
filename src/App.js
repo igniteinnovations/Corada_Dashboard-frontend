@@ -16,6 +16,7 @@ import Analytics from "./pages/Analytics";
 import Ads from "./pages/Ads";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import WeekendExperiences from "./pages/WeekendExperiences";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -30,22 +31,33 @@ function Layout() {
     location.pathname === "/login" ||
     location.pathname === "/register";
 
+  // ✅ TOGGLE FUNCTION (FIXED)
+  const toggleSidebar = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <>
+      {/* SIDEBAR */}
       {!hideLayout && <Sidebar isOpen={isOpen} />}
 
+      {/* MAIN */}
       <div className={`main ${isOpen ? "open" : "closed"}`}>
+
+        {/* NAVBAR */}
         {!hideLayout && (
-          <Navbar toggle={() => setIsOpen(!isOpen)} />
+          <Navbar toggle={toggleSidebar} />
         )}
 
+        {/* CONTENT */}
         <div className="content">
           <Routes>
-            {/* Public routes */}
+
+            {/* PUBLIC */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* Protected routes */}
+            {/* PROTECTED */}
             <Route
               path="/"
               element={
@@ -90,6 +102,16 @@ function Layout() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/weekend-experiences"
+              element={
+                <ProtectedRoute>
+                  <WeekendExperiences />
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
         </div>
       </div>
