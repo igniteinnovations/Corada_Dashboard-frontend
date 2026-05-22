@@ -11,7 +11,7 @@ function NewsItem({ item, onDelete, onEdit }) {
       return;
     }
 
-    onEdit(item._id, { title, content });
+    onEdit(item.newsId, { title, content });
     setIsEditing(false);
   };
 
@@ -69,11 +69,11 @@ function NewsItem({ item, onDelete, onEdit }) {
 
             <button
               className="delete-btn"
-              onClick={() => onDelete(item._id)}
+              onClick={() => onDelete(item.newsId)}
             >
               🗑️
             </button>
-            
+
           </>
         )}
       </div>
