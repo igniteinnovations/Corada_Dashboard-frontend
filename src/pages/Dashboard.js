@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { deleteNews, editNews } from "../api/newsApi";
 import NewsItem from "../components/NewsItem";
+import ConfirmModal from "../components/ConfirmModal"; // ✅ ADD THIS
 
 function Dashboard() {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1); // ✅ NEW
   const [hasMore, setHasMore] = useState(true); // ✅ NEW
   const [loading, setLoading] = useState(false);
+
+  const [showModal, setShowModal] = useState(false); // ✅
+  const [selectedId, setSelectedId] = useState(null); // ✅
 
   // ✅ FETCH NEWS (UPDATED)
   const fetchNews = async (pageNum = 1) => {
@@ -18,7 +22,7 @@ function Dashboard() {
         `https://api.korada.news/api/v1/news?page=${pageNum}&limit=10`
       );
 
-      const newData = res.data.allNews || [];
+      const newData = res.data.allNews || res.data.news || [];
 
       if (pageNum === 1) {
         setNews(newData); // first load
@@ -26,7 +30,6 @@ function Dashboard() {
         setNews((prev) => [...prev, ...newData]); // append
       }
 
-      // ✅ check if more data exists
       if (newData.length < 10) {
         setHasMore(false);
       }
@@ -49,13 +52,22 @@ function Dashboard() {
     fetchNews(nextPage);
   };
 
-  // ✅ DELETE
-  const handleDelete = async (id) => {
+  // ✅ OPEN MODAL (THIS FIXES YOUR ERROR)
+  const handleDelete = (id) => {
+    setSelectedId(id);
+    setShowModal(true);
+  };
+
+  // ✅ CONFIRM DELETE
+  const confirmDelete = async () => {
     try {
-      await deleteNews(id);
-      fetchNews(1); // refresh
+      await deleteNews(selectedId);
+      fetchNews(1);
     } catch (err) {
       console.log("Delete failed");
+    } finally {
+      setShowModal(false);
+      setSelectedId(null);
     }
   };
 
@@ -63,7 +75,7 @@ function Dashboard() {
   const handleEdit = async (id, updatedData) => {
     try {
       await editNews(id, updatedData);
-      fetchNews(1); // refresh
+      fetchNews(1);
     } catch (err) {
       console.log("Update failed");
     }
@@ -81,7 +93,7 @@ function Dashboard() {
             <NewsItem
               key={item._id}
               item={item}
-              onDelete={handleDelete}
+              onDelete={handleDelete} // ✅ NOW WORKS
               onEdit={handleEdit}
             />
           ))
@@ -100,6 +112,14 @@ function Dashboard() {
           </button>
         </div>
       )}
+
+      {/* ✅ CONFIRM MODAL (THIS REMOVES WARNINGS) */}
+      <ConfirmModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={confirmDelete}
+        message="Are you sure you want to delete this news?"
+      />
     </>
   );
 }

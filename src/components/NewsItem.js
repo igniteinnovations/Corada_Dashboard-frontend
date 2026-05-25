@@ -2,8 +2,12 @@ import React, { useState } from "react";
 
 function NewsItem({ item, onDelete, onEdit }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(item.title);
-  const [content, setContent] = useState(item.content);
+  const [title, setTitle] = useState(item.title?.english || "");
+  const [content, setContent] = useState(item.content?.english || "");
+
+  // // ✅ DEBUG LOG
+  // console.log("🖼 MEDIA TYPE:", item.mediaType);
+  // console.log("🖼 MEDIA URL:", item.mediaUrl);
 
   const handleSave = () => {
     if (!title || !content) {
@@ -11,7 +15,10 @@ function NewsItem({ item, onDelete, onEdit }) {
       return;
     }
 
-    onEdit(item.newsId, { title, content });
+    onEdit(item.newsId, {
+      title: { english: title },
+      content: { english: content }
+    });
     setIsEditing(false);
   };
 
@@ -21,9 +28,22 @@ function NewsItem({ item, onDelete, onEdit }) {
       {/* IMAGE */}
       <div className="news-img">
         {item.mediaType === "image" ? (
-          <img src={item.mediaUrl} alt="news" />
+          <img
+            src={item.mediaUrl}
+            alt="news"
+            onLoad={() => console.log("✅ Image Loaded:", item.mediaUrl)}
+            onError={(e) => {
+              console.log("❌ Image Failed:", item.mediaUrl);
+              e.target.src = "https://picsum.photos/300/200";
+            }}
+          />
         ) : (
-          <video src={item.mediaUrl} controls />
+          <video
+            src={item.mediaUrl}
+            controls
+            onLoadedData={() => console.log("✅ Video Loaded:", item.mediaUrl)}
+            onError={() => console.log("❌ Video Failed:", item.mediaUrl)}
+          />
         )}
       </div>
 
@@ -45,8 +65,8 @@ function NewsItem({ item, onDelete, onEdit }) {
           </>
         ) : (
           <>
-            <h3>{item.title}</h3>
-            <p>{item.content}</p>
+            <h3>{item.title?.english}</h3>
+            <p>{item.content?.english}</p>
           </>
         )}
       </div>

@@ -20,9 +20,7 @@ function Login() {
         // ✅ STORE TOKEN
         localStorage.setItem("token", data.token);
 
-        // ✅ STORE USER (NEW 🔥)
-        // If backend sends user → use it
-        // else fallback using email
+        // ✅ STORE USER
         const userData = data.user || {
           name: email.split("@")[0],
           email: email
@@ -31,7 +29,7 @@ function Login() {
         localStorage.setItem("user", JSON.stringify(userData));
 
         alert("Login successful");
-        window.location.href = "/"; // redirect
+        window.location.href = "/";
       } else {
         alert(data.message);
       }
@@ -40,6 +38,11 @@ function Login() {
       console.error(err);
       alert("Something went wrong");
     }
+  };
+
+  // ✅ NEW FUNCTION
+  const goToRegister = () => {
+    window.location.href = "/register";
   };
 
   return (
@@ -60,6 +63,25 @@ function Login() {
       />
 
       <button onClick={handleLogin}>Login</button>
+
+      {/* 🔥 NEW BUTTON */}
+      <p style={{ marginTop: "15px", fontSize: "14px" }}>
+        Don't have an account?
+      </p>
+
+      <button
+        onClick={goToRegister}
+        style={{
+          background: "transparent",
+          color: "#e60023",
+          border: "none",
+          cursor: "pointer",
+          textDecoration: "underline"
+        }}
+      >
+        Create New Account
+      </button>
+
     </div>
   );
 }

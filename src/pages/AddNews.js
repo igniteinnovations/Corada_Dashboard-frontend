@@ -47,7 +47,7 @@ function AddNews() {
     if (!selected) return;
 
     setPreview(URL.createObjectURL(selected));
-    setUrl(""); // clear URL if file used
+    setUrl("");
   };
 
   // URL INPUT
@@ -59,106 +59,64 @@ function AddNews() {
 
   // ✅ SUBMIT NEWS
   const handleSubmit = async () => {
-  console.log("🚀 handleSubmit triggered");
+    const token = localStorage.getItem("token");
 
-  const token = localStorage.getItem("token");
-  console.log("🔑 Token:", token);
+    if (!title.trim()) return alert("Title is required");
+    if (!content.trim()) return alert("Content is required");
+    if (!selectedCategory) return alert("Please select category");
 
-  // 🔥 VALIDATION (ALL REQUIRED)
-  if (!title.trim()) {
-    console.log("❌ Validation failed: Title missing");
-    return alert("Title is required");
-  }
-
-  if (!content.trim()) {
-    console.log("❌ Validation failed: Content missing");
-    return alert("Content is required");
-  }
-
-  if (!selectedCategory) {
-    console.log("❌ Validation failed: Category not selected");
-    return alert("Please select category");
-  }
-
-  if (mediaMode === "upload" && !preview) {
-    console.log("❌ Validation failed: No uploaded media");
-    return alert("Please upload media");
-  }
-
-  if (mediaMode === "url" && !url.trim()) {
-    console.log("❌ Validation failed: URL missing");
-    return alert("Please enter media URL");
-  }
-
-  setLoading(true);
-  console.log("⏳ Loading started");
-
-  try {
-    console.log("📦 Categories list:", categories);
-    console.log("📌 Selected Category ID:", selectedCategory);
-
-    // 🔥 IMPORTANT: backend expects categoryName (not ID)
-    const selectedCat = categories.find(
-      (c) => c._id === selectedCategory
-    );
-
-    console.log("✅ Matched Category Object:", selectedCat);
-
-    const mediaUrl = mediaMode === "upload" ? preview : url;
-    console.log("🖼️ Media Mode:", mediaMode);
-    console.log("🔗 Media URL:", mediaUrl);
-
-    const payload = {
-      title,
-      content,
-      mediaType,
-      mediaUrl,
-      categoryName: selectedCat?.categoryname,
-    };
-
-    console.log("📤 Payload being sent:", payload);
-
-    const response = await axios.post(
-      "https://api.korada.news/api/v1/news",
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    console.log("🎉 API Response:", response.data);
-
-    alert("✅ News created successfully!");
-
-    // RESET
-    setTitle("");
-    setContent("");
-    setSelectedCategory("");
-    setPreview(null);
-    setUrl("");
-
-    console.log("🔄 Form reset complete");
-
-  } catch (err) {
-    console.log("🔥 ERROR occurred:", err);
-
-    if (err.response) {
-      console.log("📛 Server Response Error:", err.response.data);
-      console.log("📛 Status Code:", err.response.status);
-    } else if (err.request) {
-      console.log("📡 No response received:", err.request);
-    } else {
-      console.log("⚠️ Error Message:", err.message);
+    if (mediaMode === "upload" && !preview) {
+      return alert("Please upload media");
     }
 
-    alert("❌ Failed to create news");
-  } finally {
-    setLoading(false);
-    console.log("✅ Loading ended");
-  }
-};
+    if (mediaMode === "url" && !url.trim()) {
+      return alert("Please enter media URL");
+    }
+
+    setLoading(true);
+
+    try {
+      const selectedCat = categories.find(
+        (c) => c._id === selectedCategory
+      );
+
+      const mediaUrl = mediaMode === "upload" ? preview : url;
+
+      // ✅ FIXED PAYLOAD (MULTILINGUAL)
+      const payload = {
+        title: { english: title },
+        content: { english: content },
+        mediaType,
+        mediaUrl,
+        categoryName: selectedCat?.categoryname?.english, // ✅ FIX
+      };
+
+      await axios.post(
+        "https://api.korada.news/api/v1/news",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("✅ News created successfully!");
+
+      // RESET
+      setTitle("");
+      setContent("");
+      setSelectedCategory("");
+      setPreview(null);
+      setUrl("");
+
+    } catch (err) {
+      console.log("ERROR:", err);
+      alert("❌ Failed to create news");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -198,7 +156,7 @@ function AddNews() {
                 {categories.length > 0 ? (
                   categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
-                      {cat.categoryname}
+                      {cat.categoryname?.english} {/* ✅ FIX */}
                     </option>
                   ))
                 ) : (

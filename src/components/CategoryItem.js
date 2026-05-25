@@ -3,7 +3,7 @@ import axios from "axios";
 
 function CategoryItem({ cat, refresh }) {
   const [editing, setEditing] = useState(false);
-  const [newName, setNewName] = useState(cat.categoryname);
+  const [newName, setNewName] = useState(cat.categoryname?.english || ""); // ✅ FIX
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -17,7 +17,9 @@ function CategoryItem({ cat, refresh }) {
     try {
       await axios.put(
         `https://api.korada.news/api/v1/categories/${cat._id}`,
-        { categoryname: newName },
+        {
+          categoryname: { english: newName } // ✅ FIX
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +76,7 @@ function CategoryItem({ cat, refresh }) {
         </>
       ) : (
         <>
-          <span>{cat.categoryname}</span>
+          <span>{cat.categoryname?.english}</span> {/* ✅ FIX */}
 
           <div className="actions">
             <button onClick={() => setEditing(true)}>✏️</button>
