@@ -6,6 +6,8 @@ import {
   useLocation
 } from "react-router-dom";
 
+import { Toaster } from "react-hot-toast"; // ✅ ADD THIS
+
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 
@@ -26,18 +28,19 @@ function Layout() {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
-  // 🔥 Hide sidebar/navbar on auth pages
   const hideLayout =
     location.pathname === "/login" ||
     location.pathname === "/register";
 
-  // ✅ TOGGLE FUNCTION (FIXED)
   const toggleSidebar = () => {
     setIsOpen((prev) => !prev);
   };
 
   return (
     <>
+      {/* ✅ TOASTER (GLOBAL) */}
+      <Toaster position="top-right" /> {/* 🔥 ADD THIS */}
+
       {/* SIDEBAR */}
       {!hideLayout && <Sidebar isOpen={isOpen} />}
 

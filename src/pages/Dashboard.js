@@ -2,18 +2,22 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { deleteNews, editNews } from "../api/newsApi";
 import NewsItem from "../components/NewsItem";
-import ConfirmModal from "../components/ConfirmModal"; // ✅ ADD THIS
+import ConfirmModal from "../components/ConfirmModal";
+import toast from "react-hot-toast"; // ✅ ADD THIS
 
 function Dashboard() {
   const [news, setNews] = useState([]);
-  const [page, setPage] = useState(1); // ✅ NEW
-  const [hasMore, setHasMore] = useState(true); // ✅ NEW
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const [showModal, setShowModal] = useState(false); // ✅
-  const [selectedId, setSelectedId] = useState(null); // ✅
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
-  // ✅ FETCH NEWS (UPDATED)
+  const [editingNews, setEditingNews] = useState(null);
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  // FETCH
   const fetchNews = async (pageNum = 1) => {
     try {
       setLoading(true);
@@ -25,9 +29,9 @@ function Dashboard() {
       const newData = res.data.allNews || res.data.news || [];
 
       if (pageNum === 1) {
-        setNews(newData); // first load
+        setNews(newData);
       } else {
-        setNews((prev) => [...prev, ...newData]); // append
+        setNews((prev) => [...prev, ...newData]);
       }
 
       if (newData.length < 10) {
@@ -35,7 +39,7 @@ function Dashboard() {
       }
 
     } catch (err) {
-      console.log("Fetch error:", err);
+      toast.error("Failed to fetch news ❌");
     } finally {
       setLoading(false);
     }
@@ -45,39 +49,55 @@ function Dashboard() {
     fetchNews(1);
   }, []);
 
-  // ✅ LOAD MORE BUTTON
+  // LOAD MORE
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
     fetchNews(nextPage);
   };
 
-  // ✅ OPEN MODAL (THIS FIXES YOUR ERROR)
+  // DELETE
   const handleDelete = (id) => {
     setSelectedId(id);
     setShowModal(true);
   };
 
-  // ✅ CONFIRM DELETE
   const confirmDelete = async () => {
     try {
       await deleteNews(selectedId);
+
+      toast.success("News deleted successfully 🗑️"); // ✅ TOAST
+
       fetchNews(1);
     } catch (err) {
-      console.log("Delete failed");
+      toast.error("Delete failed ❌");
     } finally {
       setShowModal(false);
       setSelectedId(null);
     }
   };
 
-  // ✅ EDIT
-  const handleEdit = async (id, updatedData) => {
+  // OPEN EDIT
+  const handleEdit = (item) => {
+    setEditingNews(item);
+    setShowDrawer(true);
+  };
+
+  // UPDATE
+  const handleUpdateNews = async () => {
     try {
-      await editNews(id, updatedData);
+      await editNews(editingNews.newsId, {
+        title: editingNews.title,
+        content: editingNews.content
+      });
+
+      toast.success("News updated successfully ✏️"); // ✅ TOAST
+
       fetchNews(1);
+      setShowDrawer(false);
+
     } catch (err) {
-      console.log("Update failed");
+      toast.error("Update failed ❌");
     }
   };
 
@@ -93,14 +113,14 @@ function Dashboard() {
             <NewsItem
               key={item._id}
               item={item}
-              onDelete={handleDelete} // ✅ NOW WORKS
+              onDelete={handleDelete}
               onEdit={handleEdit}
             />
           ))
         )}
       </div>
 
-      {/* 🔥 LOAD MORE BUTTON */}
+      {/* LOAD MORE */}
       {hasMore && (
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <button
@@ -113,13 +133,61 @@ function Dashboard() {
         </div>
       )}
 
-      {/* ✅ CONFIRM MODAL (THIS REMOVES WARNINGS) */}
+      {/* DELETE MODAL */}
       <ConfirmModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={confirmDelete}
         message="Are you sure you want to delete this news?"
       />
+
+      {/* EDIT DRAWER */}
+      {showDrawer && editingNews && (
+        <div className="drawer-overlay">
+          <div className="drawer">
+
+            <div className="drawer-header">
+              <h3>Edit News</h3>
+              <button onClick={() => setShowDrawer(false)}>✖</button>
+            </div>
+
+            <input
+              value={editingNews.title?.english || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  title: {
+                    ...editingNews.title,
+                    english: e.target.value
+                  }
+                })
+              }
+            />
+
+            <textarea
+              value={editingNews.content?.english || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  content: {
+                    ...editingNews.content,
+                    english: e.target.value
+                  }
+                })
+              }
+            />
+
+            <button
+              className="primary-btn"
+              onClick={handleUpdateNews}
+            >
+              Update News
+            </button>
+
+          </div>
+        </div>
+      )}
+
     </>
   );
 }
