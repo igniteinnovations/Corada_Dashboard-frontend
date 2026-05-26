@@ -18,7 +18,8 @@ function CategoryItem({ cat, refresh }) {
       await axios.put(
         `https://api.korada.news/api/v1/categories/${cat._id}`,
         {
-          categoryname: { english: newName } // ✅ FIX
+          categoryname: newName,
+language: "english" // or "telugu"
         },
         {
           headers: {
@@ -76,7 +77,7 @@ function CategoryItem({ cat, refresh }) {
         </>
       ) : (
         <>
-          <span>{cat.categoryname?.english}</span> {/* ✅ FIX */}
+          <span>{cat.categoryname}</span> {/* ✅ FIX */}
 
           <div className="actions">
             <button onClick={() => setEditing(true)}>✏️</button>

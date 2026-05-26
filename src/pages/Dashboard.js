@@ -79,7 +79,18 @@ function Dashboard() {
 
   // OPEN EDIT
   const handleEdit = (item) => {
-    setEditingNews(item);
+    setEditingNews({
+      ...item,
+      styles: item.styles || {
+        titleFontSize: "24px",
+        contentFontSize: "16px",
+        fontFamily: "Arial",
+        titleColor: "#000000",
+        contentColor: "#333333",
+        isBold: false,
+        isItalic: false
+      }
+    });
     setShowDrawer(true);
   };
 
@@ -88,7 +99,8 @@ function Dashboard() {
     try {
       await editNews(editingNews.newsId, {
         title: editingNews.title,
-        content: editingNews.content
+        content: editingNews.content,
+        styles: editingNews.styles
       });
 
       toast.success("News updated successfully ✏️"); // ✅ TOAST

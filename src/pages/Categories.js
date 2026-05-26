@@ -7,6 +7,7 @@ function Categories() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [color, setColor] = useState("red");
+  const [language, setLanguage] = useState("english"); // ✅ NEW
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -54,6 +55,7 @@ function Categories() {
         "https://api.korada.news/api/v1/categories/create",
         {
           categoryname: name,
+          language: language, // ✅ IMPORTANT FIX
           color: color,
         },
         {
@@ -103,6 +105,16 @@ function Categories() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+
+          {/* ✅ NEW LANGUAGE DROPDOWN */}
+          <label>Language</label>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="english">English</option>
+            <option value="telugu">Telugu</option>
+          </select>
 
           <label>Color</label>
           <div className="color-picker">

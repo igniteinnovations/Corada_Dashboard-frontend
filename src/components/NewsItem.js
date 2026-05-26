@@ -21,25 +21,35 @@ function NewsItem({ item, onDelete, onEdit }) {
 
       {/* CONTENT */}
       <div className="news-content">
-        <h3>{item.title?.english}</h3>
-        <p>{item.content?.english}</p>
+        <h3
+          style={{
+            fontSize: item.styles?.titleFontSize || "22px",
+            fontFamily: item.styles?.fontFamily || "Arial",
+            color: item.styles?.titleColor || "#000",
+            fontWeight: item.styles?.isBold ? "bold" : "normal",
+            fontStyle: item.styles?.isItalic ? "italic" : "normal"
+          }}
+        >
+          {item.title || "No Title"}
+        </h3>
+
+        <p
+          style={{
+            fontSize: item.styles?.contentFontSize || "14px",
+            fontFamily: item.styles?.fontFamily || "Arial",
+            color: item.styles?.contentColor || "#333",
+            fontWeight: item.styles?.isBold ? "bold" : "normal",
+            fontStyle: item.styles?.isItalic ? "italic" : "normal"
+          }}
+        >
+          {item.content || "No Content"}
+        </p>
       </div>
 
       {/* ACTIONS */}
       <div className="news-actions">
-        <button
-          className="edit-btn"
-          onClick={() => onEdit(item)} // 🔥 send full item
-        >
-          ✏️
-        </button>
-
-        <button
-          className="delete-btn"
-          onClick={() => onDelete(item.newsId)}
-        >
-          🗑️
-        </button>
+        <button onClick={() => onEdit(item)}>✏️</button>
+        <button onClick={() => onDelete(item.newsId)}>🗑️</button>
       </div>
 
     </div>

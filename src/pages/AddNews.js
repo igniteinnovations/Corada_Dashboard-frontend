@@ -17,6 +17,14 @@ function AddNews() {
 
   const [loading, setLoading] = useState(false);
 
+  const [titleFontSize, setTitleFontSize] = useState("24px");
+  const [contentFontSize, setContentFontSize] = useState("16px");
+  const [fontFamily, setFontFamily] = useState("Arial");
+  const [titleColor, setTitleColor] = useState("#000000");
+  const [contentColor, setContentColor] = useState("#333333");
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+
   // ✅ FETCH CATEGORIES
   const fetchCategories = async () => {
     try {
@@ -59,64 +67,54 @@ function AddNews() {
 
   // ✅ SUBMIT NEWS
   const handleSubmit = async () => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    if (!title.trim()) return alert("Title is required");
-    if (!content.trim()) return alert("Content is required");
-    if (!selectedCategory) return alert("Please select category");
+  if (!title.trim()) return alert("Title required");
+  if (!content.trim()) return alert("Content required");
+  if (!selectedCategory) return alert("Select category");
 
-    if (mediaMode === "upload" && !preview) {
-      return alert("Please upload media");
-    }
+  const mediaUrl =
+  mediaMode === "upload"
+    ? preview   // uploaded file preview URL
+    : url;      // pasted URL
 
-    if (mediaMode === "url" && !url.trim()) {
-      return alert("Please enter media URL");
-    }
-
-    setLoading(true);
-
-    try {
-      const selectedCat = categories.find(
-        (c) => c._id === selectedCategory
-      );
-
-      const mediaUrl = mediaMode === "upload" ? preview : url;
-
-      // ✅ FIXED PAYLOAD (MULTILINGUAL)
-      const payload = {
-        title: { english: title },
-        content: { english: content },
-        mediaType,
-        mediaUrl,
-        categoryName: selectedCat?.categoryname?.english, // ✅ FIX
-      };
-
-      await axios.post(
-        "https://api.korada.news/api/v1/news",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert("✅ News created successfully!");
-
-      // RESET
-      setTitle("");
-      setContent("");
-      setSelectedCategory("");
-      setPreview(null);
-      setUrl("");
-
-    } catch (err) {
-      console.log("ERROR:", err);
-      alert("❌ Failed to create news");
-    } finally {
-      setLoading(false);
+  const payload = {
+    title,
+    content,
+    language: "english", // ✅ REQUIRED
+    mediaType,
+    mediaUrl,
+    categoryName: selectedCategory, // ✅ STRING (not id)
+    styles: {
+      titleFontSize,
+      contentFontSize,
+      fontFamily,
+      titleColor,
+      contentColor,
+      isBold,
+      isItalic
     }
   };
+
+  console.log("🚀 FINAL PAYLOAD:", payload);
+console.log("SELECTED CATEGORY:", selectedCategory);
+  try {
+    await axios.post(
+      "https://api.korada.news/api/v1/news",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("News created successfully");
+
+  } catch (err) {
+    console.log("❌ ERROR:", err.response?.data || err.message);
+  }
+};
 
   return (
     <>
@@ -155,8 +153,8 @@ function AddNews() {
 
                 {categories.length > 0 ? (
                   categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.categoryname?.english} {/* ✅ FIX */}
+                    <option key={cat._id} value={cat.categoryname}>
+                      {cat.categoryname} {/* ✅ FIX */}
                     </option>
                   ))
                 ) : (
@@ -173,6 +171,65 @@ function AddNews() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
+
+          {/* 🎨 STYLE OPTIONS */}
+          {/* 🎨 STYLE OPTIONS */}
+
+          <label>Title Font Size</label>
+          <select value={titleFontSize} onChange={(e) => setTitleFontSize(e.target.value)}>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+            <option value="32px">32px</option>
+            <option value="36px">36px</option>
+          </select>
+
+          <label>Content Font Size</label>
+          <select value={contentFontSize} onChange={(e) => setContentFontSize(e.target.value)}>
+            <option value="14px">14px</option>
+            <option value="16px">16px</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+          </select>
+
+          <label>Font Family</label>
+          <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
+            <option value="Arial">Arial</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Times New Roman">Times New Roman</option>
+          </select>
+
+          <label>Title Color</label>
+          <input
+            type="color"
+            value={titleColor}
+            onChange={(e) => setTitleColor(e.target.value)}
+          />
+
+          <label>Content Color</label>
+          <input
+            type="color"
+            value={contentColor}
+            onChange={(e) => setContentColor(e.target.value)}
+          />
+
+          <label>
+            <input
+              type="checkbox"
+              checked={isBold}
+              onChange={(e) => setIsBold(e.target.checked)}
+            />
+            Bold
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={isItalic}
+              onChange={(e) => setIsItalic(e.target.checked)}
+            />
+            Italic
+          </label>
 
           {/* MEDIA TYPE */}
           <label>Media Type</label>
