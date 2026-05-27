@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -9,7 +11,7 @@ function AddNews() {
 
   // ✅ FORM STATES
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [language, setLanguage] = useState("english");
 
   // ✅ CATEGORY STATE
   const [categories, setCategories] = useState([]);
@@ -24,6 +26,10 @@ function AddNews() {
   const [contentColor, setContentColor] = useState("#333333");
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: "",
+  });
 
   // ✅ FETCH CATEGORIES
   const fetchCategories = async () => {
@@ -38,8 +44,9 @@ function AddNews() {
           },
         }
       );
-
-      setCategories(res.data.categories || []);
+      console.log("FULL RESPONSE:", res.data);
+      console.log("FULL RESPONSE:", res.data);
+      setCategories(res.data.categories);
     } catch (err) {
       console.log("Category fetch error:", err);
     }
@@ -67,25 +74,38 @@ function AddNews() {
 
   // ✅ SUBMIT NEWS
   const handleSubmit = async () => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  if (!title.trim()) return alert("Title required");
-  if (!content.trim()) return alert("Content required");
-  if (!selectedCategory) return alert("Select category");
+    if (!title.trim()) return alert("Title required");
 
-  const mediaUrl =
-  mediaMode === "upload"
-    ? preview   // uploaded file preview URL
-    : url;      // pasted URL
+    const htmlContent = editor.getHTML();
+    if (!htmlContent || htmlContent === "<p></p>") {
+      alert("Content required");
+      return;
+    }
 
-  const payload = {
-    title,
-    content,
-    language: "english", // ✅ REQUIRED
-    mediaType,
-    mediaUrl,
-    categoryName: selectedCategory, // ✅ STRING (not id)
-    styles: {
+    if (!selectedCategory) return alert("Select category");
+
+    const mediaUrl =
+      mediaMode === "upload"
+        ? preview
+        : url;
+
+    if (!mediaUrl) {
+      alert("Media required");
+      return;
+    }
+
+    const selectedCat = categories.find(
+      (c) => c._id === selectedCategory
+    );
+
+    if (!selectedCat) {
+      alert("Invalid category selected");
+      return;
+    }
+
+    const styles = {
       titleFontSize,
       contentFontSize,
       fontFamily,
@@ -93,28 +113,38 @@ function AddNews() {
       contentColor,
       isBold,
       isItalic
+    };
+
+    const payload = {
+      title,
+      content: htmlContent,
+      mediaType,
+      mediaUrl,
+      categoryId: selectedCat.categoryId,
+      categoryName: selectedCat.categoryname,
+      language,
+      styles
+    };
+
+    console.log("🚀 FINAL PAYLOAD:", payload);
+
+    try {
+      await axios.post(
+        "https://api.korada.news/api/v1/news",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("News created successfully");
+
+    } catch (err) {
+      console.log("❌ ERROR:", err.response?.data || err.message);
     }
   };
-
-  console.log("🚀 FINAL PAYLOAD:", payload);
-console.log("SELECTED CATEGORY:", selectedCategory);
-  try {
-    await axios.post(
-      "https://api.korada.news/api/v1/news",
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    alert("News created successfully");
-
-  } catch (err) {
-    console.log("❌ ERROR:", err.response?.data || err.message);
-  }
-};
 
   return (
     <>
@@ -153,8 +183,8 @@ console.log("SELECTED CATEGORY:", selectedCategory);
 
                 {categories.length > 0 ? (
                   categories.map((cat) => (
-                    <option key={cat._id} value={cat.categoryname}>
-                      {cat.categoryname} {/* ✅ FIX */}
+                    <option key={cat._id} value={cat._id}>
+                      {cat.categoryname}
                     </option>
                   ))
                 ) : (
@@ -165,12 +195,11 @@ console.log("SELECTED CATEGORY:", selectedCategory);
           </div>
 
           {/* Description */}
-          <label>Description</label>
-          <textarea
-            placeholder="Enter news content..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <label>Content</label>
+
+          <div className="editor-box">
+            <EditorContent editor={editor} />
+          </div>
 
           {/* 🎨 STYLE OPTIONS */}
           {/* 🎨 STYLE OPTIONS */}

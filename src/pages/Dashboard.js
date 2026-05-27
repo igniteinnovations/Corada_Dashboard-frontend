@@ -3,7 +3,7 @@ import axios from "axios";
 import { deleteNews, editNews } from "../api/newsApi";
 import NewsItem from "../components/NewsItem";
 import ConfirmModal from "../components/ConfirmModal";
-import toast from "react-hot-toast"; // ✅ ADD THIS
+import toast from "react-hot-toast";
 
 function Dashboard() {
   const [news, setNews] = useState([]);
@@ -66,7 +66,7 @@ function Dashboard() {
     try {
       await deleteNews(selectedId);
 
-      toast.success("News deleted successfully 🗑️"); // ✅ TOAST
+      toast.success("News deleted successfully 🗑️");
 
       fetchNews(1);
     } catch (err) {
@@ -91,6 +91,7 @@ function Dashboard() {
         isItalic: false
       }
     });
+
     setShowDrawer(true);
   };
 
@@ -98,12 +99,12 @@ function Dashboard() {
   const handleUpdateNews = async () => {
     try {
       await editNews(editingNews.newsId, {
-        title: editingNews.title,
-        content: editingNews.content,
+        title: editingNews.title,        // ✅ STRING (FIXED)
+        content: editingNews.content,    // ✅ STRING (FIXED)
         styles: editingNews.styles
       });
 
-      toast.success("News updated successfully ✏️"); // ✅ TOAST
+      toast.success("News updated successfully ✏️");
 
       fetchNews(1);
       setShowDrawer(false);
@@ -153,7 +154,7 @@ function Dashboard() {
         message="Are you sure you want to delete this news?"
       />
 
-      {/* EDIT DRAWER */}
+      {/* ✅ EDIT DRAWER FIXED */}
       {showDrawer && editingNews && (
         <div className="drawer-overlay">
           <div className="drawer">
@@ -162,32 +163,55 @@ function Dashboard() {
               <h3>Edit News</h3>
               <button onClick={() => setShowDrawer(false)}>✖</button>
             </div>
-
+           <h3> Image:</h3>
             <input
-              value={editingNews.title?.english || ""}
+              placeholder="Enter Image URL"
+              value={editingNews.mediaUrl || ""}
               onChange={(e) =>
                 setEditingNews({
                   ...editingNews,
-                  title: {
-                    ...editingNews.title,
-                    english: e.target.value
-                  }
+                  mediaUrl: e.target.value
+                })
+              }
+            />
+            {/* ✅ TITLE FIX */}
+            <h3>Title:</h3>
+            <input
+              value={editingNews.title || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  title: e.target.value
                 })
               }
             />
 
+           <h3> Content:</h3>
+            {/* ✅ CONTENT FIX */}
             <textarea
-              value={editingNews.content?.english || ""}
+              value={editingNews.content || ""}
               onChange={(e) =>
                 setEditingNews({
                   ...editingNews,
-                  content: {
-                    ...editingNews.content,
-                    english: e.target.value
-                  }
+                  content: e.target.value
                 })
               }
             />
+
+
+
+            <div style={{ marginTop: "10px" }}>
+              <img
+                src={editingNews.mediaUrl}
+                alt="preview"
+                style={{
+                  width: "100%",
+                  height: "150px",
+                  objectFit: "cover",
+                  borderRadius: "8px"
+                }}
+              />
+            </div>
 
             <button
               className="primary-btn"
@@ -199,6 +223,7 @@ function Dashboard() {
           </div>
         </div>
       )}
+
 
     </>
   );

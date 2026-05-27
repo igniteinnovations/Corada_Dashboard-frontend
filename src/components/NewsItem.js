@@ -1,6 +1,14 @@
 import React from "react";
 
 function NewsItem({ item, onDelete, onEdit }) {
+
+  // ✅ PLACE IT HERE (inside component, before return)
+  const decodeHTML = (html) => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  };
+
   return (
     <div className="news-card">
 
@@ -21,29 +29,32 @@ function NewsItem({ item, onDelete, onEdit }) {
 
       {/* CONTENT */}
       <div className="news-content">
-        <h3
+        <div
+          className="news-title"
           style={{
             fontSize: item.styles?.titleFontSize || "22px",
             fontFamily: item.styles?.fontFamily || "Arial",
             color: item.styles?.titleColor || "#000",
             fontWeight: item.styles?.isBold ? "bold" : "normal",
             fontStyle: item.styles?.isItalic ? "italic" : "normal"
+
           }}
         >
           {item.title || "No Title"}
-        </h3>
+        </div>
 
-        <p
+        {/* ✅ FIXED HTML RENDER */}
+        <div
+          className="news-text"
           style={{
             fontSize: item.styles?.contentFontSize || "14px",
             fontFamily: item.styles?.fontFamily || "Arial",
-            color: item.styles?.contentColor || "#333",
-            fontWeight: item.styles?.isBold ? "bold" : "normal",
-            fontStyle: item.styles?.isItalic ? "italic" : "normal"
+            color: item.styles?.contentColor || "#333"
           }}
-        >
-          {item.content || "No Content"}
-        </p>
+          dangerouslySetInnerHTML={{
+            __html: decodeHTML(item.content || "<p>No Content</p>")
+          }}
+        />
       </div>
 
       {/* ACTIONS */}
