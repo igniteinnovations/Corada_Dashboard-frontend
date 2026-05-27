@@ -18,6 +18,12 @@ function AddNews() {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [expertName, setExpertName] = useState("");
+  const [expertRole, setExpertRole] = useState("");
+  const [expertImage, setExpertImage] = useState("");
+  const [shortBio, setShortBio] = useState("");
+  const [expertFile, setExpertFile] = useState(null);
+  const [expertPreview, setExpertPreview] = useState(null);
 
   const [titleFontSize, setTitleFontSize] = useState("24px");
   const [contentFontSize, setContentFontSize] = useState("16px");
@@ -30,7 +36,40 @@ function AddNews() {
     extensions: [StarterKit],
     content: "",
   });
+  const [selectedFile, setSelectedFile] = useState(null);
 
+  //Added Cloudnary
+  const uploadToCloudinary = async (file) => {
+    console.log("📤 Uploading file to Cloudinary:", file);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "news_upload");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dljmnpj1i/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+
+
+    console.log("✅ Cloudinary response:", data);
+    console.log("🌐 Image URL:", data.secure_url);
+
+    return data.secure_url;
+  };
+
+  const handleExpertFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setExpertFile(file);
+    setExpertPreview(URL.createObjectURL(file));
+  };
   // ✅ FETCH CATEGORIES
   const fetchCategories = async () => {
     try {
@@ -61,6 +100,7 @@ function AddNews() {
     const selected = e.target.files[0];
     if (!selected) return;
 
+    setSelectedFile(selected);
     setPreview(URL.createObjectURL(selected));
     setUrl("");
   };
@@ -86,10 +126,20 @@ function AddNews() {
 
     if (!selectedCategory) return alert("Select category");
 
-    const mediaUrl =
-      mediaMode === "upload"
-        ? preview
-        : url;
+    let mediaUrl = "";
+
+    if (mediaMode === "upload") {
+      if (!selectedFile) {
+        alert("Please upload a file");
+        return;
+      }
+
+      // 🔥 UPLOAD TO CLOUDINARY
+      mediaUrl = await uploadToCloudinary(selectedFile);
+
+    } else {
+      mediaUrl = url;
+    }
 
     if (!mediaUrl) {
       alert("Media required");
@@ -115,6 +165,16 @@ function AddNews() {
       isItalic
     };
 
+    let expertImageUrl = "";
+
+    if (selectedCat.categoryname === "expertvoices") {
+      if (expertFile) {
+        console.log("📤 Uploading expert image...");
+        expertImageUrl = await uploadToCloudinary(expertFile);
+        console.log("✅ Expert image URL:", expertImageUrl);
+      }
+    }
+
     const payload = {
       title,
       content: htmlContent,
@@ -126,6 +186,13 @@ function AddNews() {
       styles
     };
 
+    // ✅ ADD THIS BELOW
+    if (selectedCat.categoryname === "expertvoices") {
+      payload.expertName = expertName;
+      payload.expertRole = expertRole;
+      payload.expertImage = expertImageUrl;
+      payload.shortBio = shortBio;
+    }
     console.log("🚀 FINAL PAYLOAD:", payload);
 
     try {
@@ -140,9 +207,38 @@ function AddNews() {
       );
 
       alert("News created successfully");
+      setTitle("");
+      setPreview(null);
+      setUrl("");
+      setSelectedCategory("");
+      setMediaType("image");
+      setMediaMode("upload");
+
+      editor.commands.setContent("");
+
+      setTitleFontSize("24px");
+      setContentFontSize("16px");
+      setFontFamily("Arial");
+      setTitleColor("#000000");
+      setContentColor("#333333");
+      setIsBold(false);
+      setIsItalic(false);
+
+      setExpertName("");
+      setExpertRole("");
+      setExpertImage("");
+      setShortBio("");
+
+      setSelectedFile(null);
+
 
     } catch (err) {
       console.log("❌ ERROR:", err.response?.data || err.message);
+
+      // 🔥 HANDLE 409 ERROR
+      if (err.response?.status === 409) {
+        alert("⚠️ News already exists");
+      }
     }
   };
 
@@ -193,6 +289,34 @@ function AddNews() {
               </select>
             </div>
           </div>
+
+          {/* ✅ ADD HERE (OUTSIDE SELECT) */}
+          {selectedCategory &&
+            categories.find(c => c._id === selectedCategory)?.categoryname === "expertvoices" && (
+              <>
+                <label>Expert Name</label>
+                <input value={expertName} onChange={(e) => setExpertName(e.target.value)} />
+
+                <label>Expert Role</label>
+                <input value={expertRole} onChange={(e) => setExpertRole(e.target.value)} />
+
+                <label>Expert Image URL</label>
+                <input
+                  value={expertImage}
+                  onChange={(e) => setExpertImage(e.target.value)}
+                  placeholder="Paste image URL"
+                />
+
+                {expertImage && (
+                  <div className="preview-box">
+                    <img src={expertImage} alt="expert preview" />
+                  </div>
+                )}
+
+                <label>Short Bio</label>
+                <textarea value={shortBio} onChange={(e) => setShortBio(e.target.value)} />
+              </>
+            )}
 
           {/* Description */}
           <label>Content</label>
