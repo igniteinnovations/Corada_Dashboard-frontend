@@ -1772,3 +1772,70 @@ textarea {
 .editor-toolbar button:hover {
   background: #f0f0f0;
 }
+
+
+/* GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.premium-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* HOVER EFFECT */
+.premium-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* TOP LABEL */
+.stat-header .slug {
+  font-size: 13px;
+  color: #888;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* MAIN METRIC */
+.views {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.views-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* DETAILS */
+.stat-details {
+  font-size: 13px;
+  color: #555;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* OPTIONAL: COLOR STRIP */
+.premium-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #ff4d4d, #ff9f43);
+}
