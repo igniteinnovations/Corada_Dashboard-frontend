@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -33,7 +34,7 @@ function AddNews() {
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Underline],
     content: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
@@ -63,12 +64,9 @@ function AddNews() {
     return data.secure_url;
   };
 
-  const handleExpertFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setExpertFile(file);
-    setExpertPreview(URL.createObjectURL(file));
+  const handleUrlChange = (e) => {
+    setUrl(e.target.value);
+    setPreview(e.target.value); // optional: show preview instantly
   };
   // ✅ FETCH CATEGORIES
   const fetchCategories = async () => {
@@ -83,9 +81,11 @@ function AddNews() {
           },
         }
       );
-      console.log("FULL RESPONSE:", res.data);
-      console.log("FULL RESPONSE:", res.data);
-      setCategories(res.data.categories);
+
+      console.log("CATEGORIES:", res.data);
+
+      setCategories(res.data.categories); // ✅ IMPORTANT
+
     } catch (err) {
       console.log("Category fetch error:", err);
     }
@@ -97,26 +97,26 @@ function AddNews() {
 
   // FILE UPLOAD
   const handleFileChange = (e) => {
-    const selected = e.target.files[0];
-    if (!selected) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-    setSelectedFile(selected);
-    setPreview(URL.createObjectURL(selected));
-    setUrl("");
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   // URL INPUT
-  const handleUrlChange = (e) => {
-    const value = e.target.value;
-    setUrl(value);
-    setPreview(value);
-  };
+
 
   // ✅ SUBMIT NEWS
   const handleSubmit = async () => {
     const token = localStorage.getItem("token");
+    console.log("TOKEN:", token);
 
-    if (!title.trim()) return alert("Title required");
+    // ✅ VALIDATIONS
+    if (!title.trim()) {
+      alert("Title required");
+      return;
+    }
 
     const htmlContent = editor.getHTML();
     if (!htmlContent || htmlContent === "<p></p>") {
@@ -124,37 +124,41 @@ function AddNews() {
       return;
     }
 
-    if (!selectedCategory) return alert("Select category");
+    if (!selectedCategory) {
+      alert("Select category");
+      return;
+    }
 
+    // ✅ MEDIA URL
     let mediaUrl = "";
 
     if (mediaMode === "upload") {
       if (!selectedFile) {
-        alert("Please upload a file");
+        alert("Upload a file");
         return;
       }
 
-      // 🔥 UPLOAD TO CLOUDINARY
       mediaUrl = await uploadToCloudinary(selectedFile);
-
     } else {
+      if (!url) {
+        alert("Paste media URL");
+        return;
+      }
+
       mediaUrl = url;
     }
 
-    if (!mediaUrl) {
-      alert("Media required");
-      return;
-    }
-
+    // ✅ FIND CATEGORY
     const selectedCat = categories.find(
       (c) => c._id === selectedCategory
     );
 
     if (!selectedCat) {
-      alert("Invalid category selected");
+      alert("Invalid category");
       return;
     }
 
+    // ✅ STYLES
     const styles = {
       titleFontSize,
       contentFontSize,
@@ -165,16 +169,7 @@ function AddNews() {
       isItalic
     };
 
-    let expertImageUrl = "";
-
-    if (selectedCat.categoryname === "expertvoices") {
-      if (expertFile) {
-        console.log("📤 Uploading expert image...");
-        expertImageUrl = await uploadToCloudinary(expertFile);
-        console.log("✅ Expert image URL:", expertImageUrl);
-      }
-    }
-
+    // ✅ FINAL PAYLOAD
     const payload = {
       title,
       content: htmlContent,
@@ -183,19 +178,22 @@ function AddNews() {
       categoryId: selectedCat.categoryId,
       categoryName: selectedCat.categoryname,
       language,
-      styles
+      styles,
+
+      // ✅ ADD THIS BLOCK
+      ...(selectedCat.categoryname === "expertvoices" && {
+        expertName,
+        expertRole,
+        expertImage,
+        shortBio
+      })
     };
 
-    // ✅ ADD THIS BELOW
-    if (selectedCat.categoryname === "expertvoices") {
-      payload.expertName = expertName;
-      payload.expertRole = expertRole;
-      payload.expertImage = expertImageUrl;
-      payload.shortBio = shortBio;
-    }
     console.log("🚀 FINAL PAYLOAD:", payload);
 
     try {
+      setLoading(true);
+
       await axios.post(
         "https://api.korada.news/api/v1/news",
         payload,
@@ -206,39 +204,26 @@ function AddNews() {
         }
       );
 
-      alert("News created successfully");
+      alert("✅ News created successfully");
+
+      // 🔄 RESET FORM
       setTitle("");
-      setPreview(null);
-      setUrl("");
-      setSelectedCategory("");
-      setMediaType("image");
-      setMediaMode("upload");
-
       editor.commands.setContent("");
-
-      setTitleFontSize("24px");
-      setContentFontSize("16px");
-      setFontFamily("Arial");
-      setTitleColor("#000000");
-      setContentColor("#333333");
-      setIsBold(false);
-      setIsItalic(false);
-
-      setExpertName("");
-      setExpertRole("");
-      setExpertImage("");
-      setShortBio("");
-
-      setSelectedFile(null);
-
+      setUrl("");
+      setPreview(null);
+      setSelectedCategory("");
 
     } catch (err) {
       console.log("❌ ERROR:", err.response?.data || err.message);
 
-      // 🔥 HANDLE 409 ERROR
-      if (err.response?.status === 409) {
-        alert("⚠️ News already exists");
+      if (err.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        localStorage.removeItem("token");
+      } else {
+        alert("Failed to create news");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -322,7 +307,56 @@ function AddNews() {
           <label>Content</label>
 
           <div className="editor-box">
+
+            {/* TOOLBAR */}
+            <div className="editor-toolbar">
+
+              <button
+                onClick={() => editor?.chain().focus().toggleBold().run()}
+                disabled={!editor || !editor.state.selection.content().size}
+              >
+                B
+              </button>
+
+              <button
+                onClick={() => editor?.chain().focus().toggleItalic().run()}
+                disabled={!editor || !editor.state.selection.content().size}
+              >
+                I
+              </button>
+
+              <button
+                onClick={() => editor?.chain().focus().toggleUnderline().run()}
+                disabled={!editor || !editor.state.selection.content().size}
+              >
+                U
+              </button>
+
+              <button
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+                disabled={!editor || !editor.state.selection.content().size}
+              >
+                H1
+              </button>
+
+              <button
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                disabled={!editor || !editor.state.selection.content().size}
+              >
+                H2
+              </button>
+
+              <button
+                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                disabled={!editor || !editor.state.selection.content().size}
+              >
+                • List
+              </button>
+
+            </div>
+            {/* EDITOR */}
             <EditorContent editor={editor} />
+
           </div>
 
           {/* 🎨 STYLE OPTIONS */}

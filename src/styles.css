@@ -1723,3 +1723,52 @@ textarea {
 .news-text p {
   margin: 0;
 }
+
+.ProseMirror {
+  min-height: 150px;
+  outline: none;
+}
+
+.tippy-box {
+  background: black;
+  color: white;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.tippy-box button {
+  color: white;
+  background: transparent;
+  border: none;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.tippy-box button.active {
+  font-weight: bold;
+}
+
+.editor-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 150px;
+}
+
+.editor-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.editor-toolbar button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background: rgb(234, 104, 104);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.editor-toolbar button:hover {
+  background: #f0f0f0;
+}
