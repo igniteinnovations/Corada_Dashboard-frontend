@@ -3,7 +3,7 @@ import axios from "axios";
 
 function CategoryItem({ cat, refresh }) {
   const [editing, setEditing] = useState(false);
-  const [newName, setNewName] = useState(cat.categoryname?.english || ""); // ✅ FIX
+  const [newName, setNewName] = useState(cat.categoryname || "");
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -19,7 +19,7 @@ function CategoryItem({ cat, refresh }) {
         `https://api.korada.news/api/v1/categories/${cat._id}`,
         {
           categoryname: newName,
-language: "english" // or "telugu"
+          language: "english" // or "telugu"
         },
         {
           headers: {
@@ -80,7 +80,14 @@ language: "english" // or "telugu"
           <span>{cat.categoryname}</span> {/* ✅ FIX */}
 
           <div className="actions">
-            <button onClick={() => setEditing(true)}>✏️</button>
+            <button
+              onClick={() => {
+                setNewName(cat.categoryname);
+                setEditing(true);
+              }}
+            >
+              ✏️
+            </button>
             <button onClick={handleDelete}>🗑️</button>
           </div>
         </>

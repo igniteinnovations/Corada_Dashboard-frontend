@@ -116,7 +116,7 @@ function Categories() {
             <option value="telugu">Telugu</option>
           </select>
 
-          <label>Color</label>
+          {/* <label>Color</label>
           <div className="color-picker">
             {["red", "yellow", "green", "blue", "purple"].map((c) => (
               <span
@@ -125,7 +125,7 @@ function Categories() {
                 onClick={() => setColor(c)}
               ></span>
             ))}
-          </div>
+          </div> */}
 
           <button
             className="primary-btn"
