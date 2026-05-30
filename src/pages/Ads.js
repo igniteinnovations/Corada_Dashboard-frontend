@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import AdItem from "../components/AdItem";
 import { createAd, getAds, editAd, deleteAd } from "../api/adsApi";
 import "../components/DeleteModal.css";
@@ -41,13 +42,13 @@ function Ads() {
   const confirmDelete = async () => {
     try {
       await deleteAd(selectedAdId);
-      alert("Deleted successfully");
+      toast.success("Ad deleted successfully ✅");
 
       setShowDeleteModal(false);
       setSelectedAdId(null);
       fetchAds();
     } catch {
-      alert("Delete failed");
+      alert("Delete failed ❌");
     }
   };
 
@@ -73,7 +74,7 @@ function Ads() {
         isActive: true,
       });
 
-      alert("Updated successfully");
+      toast.success("Ad updated successfully ✨");
 
       setShowDrawer(false);
       setEditingAd(null);
@@ -85,7 +86,7 @@ function Ads() {
 
       fetchAds();
     } catch {
-      alert("Update failed");
+      toast.error("Update failed ❌");
     }
   };
 
@@ -99,7 +100,7 @@ function Ads() {
     setSuccess("");
 
     if (!title || !imageUrl || !redirectUrl) {
-      setError("All fields are required");
+        toast.error("All fields are required");
       return;
     }
 
@@ -113,7 +114,7 @@ function Ads() {
         isActive: true,
       });
 
-      setSuccess("Ad created successfully!");
+      toast.success("Ad created successfully 🎉");
 
       // 🔥 CLEAR ADD FORM ONLY
       setTitle("");

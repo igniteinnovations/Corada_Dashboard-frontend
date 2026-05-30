@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import toast from "react-hot-toast";
 function CategoryItem({ cat, refresh, language }) {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(cat.categoryname || "");
@@ -30,7 +30,7 @@ function CategoryItem({ cat, refresh, language }) {
           },
         }
       );
-
+  toast.success("Updated successfully ");
       setEditing(false);
       refresh(); // 🔥 refresh list
 
@@ -59,7 +59,7 @@ function CategoryItem({ cat, refresh, language }) {
       refresh(); // 🔥 refresh list
 
     } catch (err) {
-      alert("Delete failed");
+      toast.error("Delete failed ❌");
     }
   };
 

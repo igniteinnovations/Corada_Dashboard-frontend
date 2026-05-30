@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function WeekendExperiences() {
     const [showForm, setShowForm] = useState(false);
@@ -22,6 +23,8 @@ function WeekendExperiences() {
     });
 
     const [loading, setLoading] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -49,26 +52,9 @@ function WeekendExperiences() {
     }, []);
 
     // ✅ DELETE
-    const handleDelete = async (id) => {
-        const token = localStorage.getItem("token");
-
-        if (!window.confirm("Delete this experience?")) return;
-
-        try {
-            await axios.delete(
-                `https://api.korada.news/api/v1/weekend-experiences/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            alert("Deleted successfully");
-            fetchExperiences();
-        } catch {
-            alert("Delete failed");
-        }
+    const handleDelete = (id) => {
+        setSelectedId(id);
+        setShowDeleteModal(true);
     };
 
     // ✅ EDIT (prefill FULL FORM)
@@ -104,11 +90,10 @@ function WeekendExperiences() {
             !form.duration ||
             !form.price ||
             !form.rating ||
-            !form.mediaUrl ||
-            !form.link
+            !form.mediaUrl
 
         ) {
-            alert("All fields are required");
+            toast.error("All fields are required ❌");
             return;
         }
 
@@ -133,7 +118,7 @@ function WeekendExperiences() {
                     }
                 );
 
-                alert("✅ Updated successfully");
+                toast.success("Updated successfully ✨");
             } else {
                 // ➕ CREATE
                 await axios.post(
@@ -146,10 +131,13 @@ function WeekendExperiences() {
                     }
                 );
 
-                alert("✅ Experience created!");
+                toast.success("Experience created 🎉");
+
+
             }
 
-            // RESET
+
+            // ✅ RESET FORM (correct)
             setForm({
                 title: "",
                 description: "",
@@ -163,16 +151,38 @@ function WeekendExperiences() {
                 mediaUrl: "",
                 link: "",
                 isFeatured: false,
-            });
+            })
 
             setEditingId(null);
             setShowForm(false);
             fetchExperiences();
 
         } catch {
-            alert("❌ Operation failed");
+            toast.error("Operation failed ❌");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const confirmDelete = async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.delete(
+                `https://api.korada.news/api/v1/weekend-experiences/${selectedId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            toast.success("Deleted successfully 🗑️");
+            setShowDeleteModal(false);
+            setSelectedId(null);
+
+            fetchExperiences();
+        } catch {
+            toast.error("Delete failed ❌");
         }
     };
 
@@ -318,6 +328,33 @@ function WeekendExperiences() {
                     color: white;
                 }
             `}</style>
+
+            {showDeleteModal && (
+                <div className="modal-overlay">
+                    <div className="modal">
+
+                        <h3>Delete Experience?</h3>
+                        <p>Are you sure you want to delete this experience?</p>
+
+                        <div className="modal-actions">
+                            <button
+                                className="cancel-btn"
+                                onClick={() => setShowDeleteModal(false)}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                className="delete-btn"
+                                onClick={confirmDelete}
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            )}
         </>
     );
 }

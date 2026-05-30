@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CategoryItem from "../components/CategoryItem";
+import toast from "react-hot-toast";
 
 function Categories() {
   const [englishName, setEnglishName] = useState("");
@@ -65,7 +66,7 @@ function Categories() {
         }
       );
 
-      setSuccess("Category added successfully!");
+        toast.success("Category added successfully!");
       setEnglishName("");
       setTeluguName("");
 
