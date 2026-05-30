@@ -1,99 +1,259 @@
-/* 🔥 TOP TRENDING */
-.top-trending {
+.analytics-dashboard {
+  background: #f5f6fa;
+  padding: 20px;
+}
+
+/* CARDS */
+.top-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.dashboard-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+
+/* CHARTS */
+.charts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.chart-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ========================= */
+/* 🔥 BOTTOM SECTION (LIGHT) */
+/* ========================= */
+
+.bottom-section {
   display: flex;
   gap: 20px;
-  background: linear-gradient(135deg, #111, #333);
-  color: #fff;
+  margin-top: 20px;
+}
+
+/* TABLE CARD */
+.table-card {
+  flex: 3;
+  background: #ffffff;
   padding: 20px;
   border-radius: 16px;
-  margin-bottom: 20px;
-  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.top-trending img {
-  width: 120px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 10px;
+.table-card h3 {
+  margin-bottom: 10px;
+  color: #111;
 }
 
-/* GRID */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+/* TABLE */
+.table-wrapper {
+  max-height: 350px;
+  overflow-y: auto;
 }
 
-/* CARD */
-.premium-card {
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  transition: 0.3s;
-  position: relative;
-}
-
-.premium-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-}
-
-/* IMAGE */
-.card-img {
+table {
   width: 100%;
-  height: 140px;
-  object-fit: cover;
+  border-collapse: collapse;
 }
 
-/* BADGE */
-.badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #ff4d4d;
-  color: #fff;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 6px;
+th {
+  text-align: left;
+  font-size: 13px;
+  color: #888;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 }
 
-/* CONTENT */
-.card-content {
-  padding: 15px;
+td {
+  padding: 10px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #333;
 }
 
-.card-content h4 {
+/* ARTICLE TEXT */
+.article-cell {
+  max-width: 300px;
+  font-size: 14px;
+  color: #222;
+}
+
+/* ========================= */
+/* 🔥 TRENDING SIDE (LIGHT) */
+/* ========================= */
+
+.trending-card {
+  flex: 1;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.trending-card h3 {
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.trend-item {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 8px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.trend-item:hover {
+  background: #f5f6fa;
+}
+
+.rank {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ff4d4d;
+  /* 🔥 RED THEME */
+  width: 20px;
+}
+
+.trend-item p {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
+  color: #111;
+}
+
+.trend-item small {
+  color: #888;
+}
+
+/* ========================= */
+/* 🔥 RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 1000px) {
+  .bottom-section {
+    flex-direction: column;
+  }
+}
+
+.rank {
+  font-size: 16px;
+  font-weight: bold;
+  width: 24px;
+}
+
+/* 🥇 #1 */
+.trend-item:nth-child(1) .rank {
+  color: #ff3b3b;
+}
+
+/* 🥈 #2 */
+.trend-item:nth-child(2) .rank {
+  color: #ff6b6b;
+}
+
+/* 🥉 #3 */
+.trend-item:nth-child(3) .rank {
+  color: #ff9b9b;
+}
+
+/* Others */
+.trend-item:nth-child(n+4) .rank {
+  color: #999;
+}
+
+.row-index {
+  color: #ff4d4d;
+  /* 🔥 your brand red */
   font-weight: 600;
 }
 
-/* SLUG */
-.slug {
-  display: block;
-  font-size: 12px;
-  color: #888;
-  margin-bottom: 8px;
+.row-index {
+  background: #ffe5e5;
+  color: #ff4d4d;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: center;
+  min-width: 28px;
 }
 
-/* MAIN METRIC */
-.views {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 5px 0;
+/* Top 3 */
+tbody tr:nth-child(1) .row-index {
+  background: #ff4d4d;
+  color: #fff;
 }
 
-.views-label {
-  font-size: 12px;
-  color: #666;
+tbody tr:nth-child(2) .row-index {
+  background: #ff7a7a;
+  color: #fff;
 }
 
-/* DETAILS */
-.stat-details {
-  font-size: 12px;
-  color: #555;
+tbody tr:nth-child(3) .row-index {
+  background: #ffb3b3;
+  color: #fff;
+}
+
+/* TOP CARDS */
+.top-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-top: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+
+/* CARD */
+.dashboard-card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: 0.2s;
+  border-left: 4px solid #ff4d4d;
+  /* 🔥 RED ACCENT */
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+}
+
+/* TITLE */
+.dashboard-card h4 {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* VALUE */
+.dashboard-card h2 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #111;
+}
+
+.dashboard-card h2 {
+  color: #ff4d4d;
+  /* 🔥 make numbers red */
+}
+
+.dashboard-card svg {
+  color: #ff4d4d;
+  margin-bottom: 6px;
 }

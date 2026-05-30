@@ -100,7 +100,7 @@ function Ads() {
     setSuccess("");
 
     if (!title || !imageUrl || !redirectUrl) {
-        toast.error("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
@@ -202,7 +202,7 @@ function Ads() {
         </div>
       </div>
 
-      {/* ✅ EDIT DRAWER */}
+      {/*  EDIT DRAWER */}
       {showDrawer && (
         <div className="drawer-overlay" onClick={() => setShowDrawer(false)}>
           <div className="drawer" onClick={(e) => e.stopPropagation()}>
@@ -238,7 +238,7 @@ function Ads() {
         </div>
       )}
 
-      {/* ✅ DELETE MODAL */}
+      {/*  DELETE MODAL */}
       {showDeleteModal && (
         <div className="modal-overlay">
           <div className="modal">
