@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from "react";
 import AdItem from "../components/AdItem";
 import { createAd, getAds, editAd, deleteAd } from "../api/adsApi";
+import "../components/DeleteModal.css";
 
 function Ads() {
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [redirectUrl, setRedirectUrl] = useState("");
+
+  // ✅ NEW EDIT STATES (IMPORTANT)
+  const [editTitle, setEditTitle] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [editRedirectUrl, setEditRedirectUrl] = useState("");
+
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [editingAd, setEditingAd] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedAdId, setSelectedAdId] = useState(null);
 
   // ✅ FETCH ADS
   const fetchAds = async () => {
@@ -22,24 +33,56 @@ function Ads() {
   };
 
   // ✅ DELETE
-  const handleDelete = async (id) => {
-    const confirm = window.confirm("Delete this ad?");
-    if (!confirm) return;
+  const handleDelete = (id) => {
+    setSelectedAdId(id);
+    setShowDeleteModal(true);
+  };
 
+  const confirmDelete = async () => {
     try {
-      await deleteAd(id);
+      await deleteAd(selectedAdId);
       alert("Deleted successfully");
+
+      setShowDeleteModal(false);
+      setSelectedAdId(null);
       fetchAds();
     } catch {
       alert("Delete failed");
     }
   };
 
-  // ✅ EDIT
-  const handleEdit = async (id, data) => {
+  // ✅ EDIT CLICK
+  const handleEdit = (ad) => {
+    setEditingAd(ad);
+
+    // 🔥 FILL EDIT STATE ONLY
+    setEditTitle(ad.title || "");
+    setEditImageUrl(ad.imageUrl || "");
+    setEditRedirectUrl(ad.redirectUrl || "");
+
+    setShowDrawer(true);
+  };
+
+  // ✅ UPDATE AD
+  const handleUpdateAd = async () => {
     try {
-      await editAd(id, data);
+      await editAd(editingAd.advertisementId, {
+        title: editTitle,
+        imageUrl: editImageUrl,
+        redirectUrl: editRedirectUrl,
+        isActive: true,
+      });
+
       alert("Updated successfully");
+
+      setShowDrawer(false);
+      setEditingAd(null);
+
+      // 🔥 CLEAR EDIT STATE ONLY
+      setEditTitle("");
+      setEditImageUrl("");
+      setEditRedirectUrl("");
+
       fetchAds();
     } catch {
       alert("Update failed");
@@ -72,11 +115,12 @@ function Ads() {
 
       setSuccess("Ad created successfully!");
 
+      // 🔥 CLEAR ADD FORM ONLY
       setTitle("");
       setImageUrl("");
       setRedirectUrl("");
 
-      fetchAds(); // refresh list
+      fetchAds();
     } catch (err) {
       setError("Something went wrong");
     } finally {
@@ -91,7 +135,7 @@ function Ads() {
 
       <div className="categories-layout">
 
-        {/* LEFT: FORM */}
+        {/* LEFT: ADD FORM */}
         <div className="card">
           <div className="card-header">
             <div className="bar"></div>
@@ -144,7 +188,6 @@ function Ads() {
             </div>
           ) : (
             <div className="ads-scroll">
-
               {ads.map((ad) => (
                 <AdItem
                   key={ad._id || ad.advertisementId}
@@ -153,13 +196,69 @@ function Ads() {
                   onEdit={handleEdit}
                 />
               ))}
-
             </div>
           )}
-
         </div>
-
       </div>
+
+      {/* ✅ EDIT DRAWER */}
+      {showDrawer && (
+        <div className="drawer-overlay" onClick={() => setShowDrawer(false)}>
+          <div className="drawer" onClick={(e) => e.stopPropagation()}>
+
+            <div className="drawer-header">
+              <h3>Edit Ad</h3>
+              <button onClick={() => setShowDrawer(false)}>✖</button>
+            </div>
+
+            <label>Ad Title</label>
+            <input
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+            />
+
+            <label>Image URL</label>
+            <input
+              value={editImageUrl}
+              onChange={(e) => setEditImageUrl(e.target.value)}
+            />
+
+            <label>Redirect Link</label>
+            <input
+              value={editRedirectUrl}
+              onChange={(e) => setEditRedirectUrl(e.target.value)}
+            />
+
+            <button className="primary-btn" onClick={handleUpdateAd}>
+              Update Ad
+            </button>
+
+          </div>
+        </div>
+      )}
+
+      {/* ✅ DELETE MODAL */}
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Delete Ad?</h3>
+            <p>Are you sure you want to delete this ad?</p>
+
+            <div className="modal-actions">
+              <button
+                className="cancel-btn"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="delete-btn" onClick={confirmDelete}>
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

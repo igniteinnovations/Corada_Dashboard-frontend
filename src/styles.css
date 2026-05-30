@@ -671,7 +671,7 @@ input:focus {
 }
 
 .news-title {
-   all: unset;
+  all: unset;
   display: block;
   margin-bottom: 6px;
   flex-shrink: 0;
@@ -699,12 +699,12 @@ input:focus {
   /* font-size: 12px; */
   /* 🔥 smaller text */
   /* color: #555; */
-/*  */
+  /*  */
   overflow-y: auto;
   /* font-size: 12px; */
   /* color: #555; */
   line-height: 1.2;
-    margin: 0;
+  margin: 0;
   color: inherit !important;
   font-size: inherit !important;
 }
@@ -756,6 +756,12 @@ input:focus {
   height: 50px;
   object-fit: cover;
   border-radius: 6px;
+}
+
+.ads-scroll {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
 }
 
 /* TEXT */
@@ -1711,15 +1717,19 @@ textarea {
 
 /* 🔥 THIS IS THE MAIN FIX */
 .editor-box .ProseMirror {
-  min-height: 120px;     /* makes it multiline */
+  min-height: 120px;
+  /* makes it multiline */
   outline: none;
-  white-space: pre-wrap; /* allows wrapping */
+  white-space: pre-wrap;
+  /* allows wrapping */
   word-break: break-word;
 }
+
 .news-title {
   display: block;
   margin-bottom: 6px;
 }
+
 .news-text p {
   margin: 0;
 }
