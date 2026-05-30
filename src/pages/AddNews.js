@@ -176,12 +176,15 @@ function AddNews() {
       mediaType,
       mediaUrl,
       categoryId: selectedCat.categoryId,
-      categoryName: selectedCat.categoryname,
+      categoryName:
+        language === "telugu"
+          ? selectedCat.teluguName
+          : selectedCat.englishName,
       language,
       styles,
 
       // ✅ ADD THIS BLOCK
-      ...(selectedCat.categoryname === "expertvoices" && {
+      ...(selectedCat.slug === "expertvoices" && {
         expertName,
         expertRole,
         expertImage,
@@ -273,7 +276,9 @@ function AddNews() {
                 {categories.length > 0 ? (
                   categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
-                      {cat.categoryname}
+                      {language === "telugu"
+                        ? cat.teluguName
+                        : cat.englishName}
                     </option>
                   ))
                 ) : (
@@ -285,7 +290,7 @@ function AddNews() {
 
           {/* ✅ ADD HERE (OUTSIDE SELECT) */}
           {selectedCategory &&
-            categories.find(c => c._id === selectedCategory)?.categoryname === "expertvoices" && (
+            categories.find(c => c._id === selectedCategory)?.slug === "expertvoices"&& (
               <>
                 <label>Expert Name</label>
                 <input value={expertName} onChange={(e) => setExpertName(e.target.value)} />

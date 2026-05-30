@@ -3,7 +3,8 @@ import axios from "axios";
 import CategoryItem from "../components/CategoryItem";
 
 function Categories() {
-  const [name, setName] = useState("");
+  const [englishName, setEnglishName] = useState("");
+  const [teluguName, setTeluguName] = useState("");
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [color, setColor] = useState("red");
@@ -43,8 +44,8 @@ function Categories() {
     setError("");
     setSuccess("");
 
-    if (!name.trim()) {
-      setError("Please enter category name");
+    if (!englishName.trim() || !teluguName.trim()) {
+      setError("Please enter both English and Telugu names");
       return;
     }
 
@@ -54,9 +55,8 @@ function Categories() {
       await axios.post(
         "https://api.korada.news/api/v1/categories/create",
         {
-          categoryname: name,
-          language: language, // ✅ IMPORTANT FIX
-          color: color,
+          englishName,
+          teluguName
         },
         {
           headers: {
@@ -66,7 +66,8 @@ function Categories() {
       );
 
       setSuccess("Category added successfully!");
-      setName("");
+      setEnglishName("");
+      setTeluguName("");
 
       fetchCategories(); // 🔥 refresh
 
@@ -99,11 +100,18 @@ function Categories() {
           {error && <p style={{ color: "red" }}>{error}</p>}
           {success && <p style={{ color: "green" }}>{success}</p>}
 
-          <label>Name</label>
+          <label>English Name</label>
           <input
             placeholder="e.g. Entertainment"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={englishName}
+            onChange={(e) => setEnglishName(e.target.value)}
+          />
+
+          <label>Telugu Name</label>
+          <input
+            placeholder="e.g. వినోదం"
+            value={teluguName}
+            onChange={(e) => setTeluguName(e.target.value)}
           />
 
           {/* ✅ NEW LANGUAGE DROPDOWN */}
@@ -115,17 +123,6 @@ function Categories() {
             <option value="english">English</option>
             <option value="telugu">Telugu</option>
           </select>
-
-          {/* <label>Color</label>
-          <div className="color-picker">
-            {["red", "yellow", "green", "blue", "purple"].map((c) => (
-              <span
-                key={c}
-                className={`color ${c} ${color === c ? "active" : ""}`}
-                onClick={() => setColor(c)}
-              ></span>
-            ))}
-          </div> */}
 
           <button
             className="primary-btn"
@@ -152,6 +149,7 @@ function Categories() {
                   key={cat._id}
                   cat={cat}
                   refresh={fetchCategories}
+                  language={language}
                 />
               ))}
             </ul>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function CategoryItem({ cat, refresh }) {
+function CategoryItem({ cat, refresh, language }) {
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(cat.categoryname || "");
   const [loading, setLoading] = useState(false);
@@ -18,8 +18,11 @@ function CategoryItem({ cat, refresh }) {
       await axios.put(
         `https://api.korada.news/api/v1/categories/${cat._id}`,
         {
-          categoryname: newName,
-          language: "english" // or "telugu"
+          englishName:
+            language === "english" ? newName : cat.englishName,
+
+          teluguName:
+            language === "telugu" ? newName : cat.teluguName
         },
         {
           headers: {
@@ -77,12 +80,20 @@ function CategoryItem({ cat, refresh }) {
         </>
       ) : (
         <>
-          <span>{cat.categoryname}</span> {/* ✅ FIX */}
+          <span>
+            {language === "telugu"
+              ? cat.teluguName
+              : cat.englishName}
+          </span>
 
           <div className="actions">
             <button
               onClick={() => {
-                setNewName(cat.categoryname);
+                setNewName(
+                  language === "telugu"
+                    ? cat.teluguName
+                    : cat.englishName
+                );
                 setEditing(true);
               }}
             >
