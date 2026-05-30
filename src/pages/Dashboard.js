@@ -16,6 +16,7 @@ function Dashboard() {
 
   const [editingNews, setEditingNews] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
+  const [total, setTotal] = useState(0);
 
   // FETCH
   const fetchNews = async (pageNum = 1) => {
@@ -28,13 +29,20 @@ function Dashboard() {
 
       const newData = res.data.allNews || res.data.news || [];
 
+      // ✅ SET TOTAL
+      setTotal(res.data.total);
+
       if (pageNum === 1) {
         setNews(newData);
       } else {
         setNews((prev) => [...prev, ...newData]);
       }
 
-      if (newData.length < 10) {
+      // ✅ FIXED LOGIC
+      const totalLoaded =
+        pageNum === 1 ? newData.length : news.length + newData.length;
+
+      if (totalLoaded >= res.data.total) {
         setHasMore(false);
       }
 
@@ -116,7 +124,13 @@ function Dashboard() {
 
   return (
     <>
-      <h1>Latest News</h1>
+        <h1>Latest News</h1>
+
+
+      <p style={{ textAlign: "right", marginBottom: "20px", color: "#555" }}>
+        Showing {news.length} of {total} news
+      </p>
+     
 
       <div className="news-grid">
         {news.length === 0 ? (
@@ -163,7 +177,7 @@ function Dashboard() {
               <h3>Edit News</h3>
               <button onClick={() => setShowDrawer(false)}>✖</button>
             </div>
-           <h3> Image:</h3>
+            <h3> Image:</h3>
             <input
               placeholder="Enter Image URL"
               value={editingNews.mediaUrl || ""}
@@ -186,7 +200,7 @@ function Dashboard() {
               }
             />
 
-           <h3> Content:</h3>
+            <h3> Content:</h3>
             {/* ✅ CONTENT FIX */}
             <textarea
               value={editingNews.content || ""}
