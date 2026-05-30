@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -34,7 +35,14 @@ function AddNews() {
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [
+      StarterKit,
+      Underline,
+      Link.configure({
+        openOnClick: true,
+      }),
+
+    ],
     content: "",
   });
   const [selectedFile, setSelectedFile] = useState(null);
@@ -290,7 +298,7 @@ function AddNews() {
 
           {/* ✅ ADD HERE (OUTSIDE SELECT) */}
           {selectedCategory &&
-            categories.find(c => c._id === selectedCategory)?.slug === "expertvoices"&& (
+            categories.find(c => c._id === selectedCategory)?.slug === "expertvoices" && (
               <>
                 <label>Expert Name</label>
                 <input value={expertName} onChange={(e) => setExpertName(e.target.value)} />
@@ -346,6 +354,24 @@ function AddNews() {
               </button>
 
               <button
+                onClick={() => {
+                  const url = prompt("Enter URL");
+
+                  if (url) {
+                    editor
+                      ?.chain()
+                      .focus()
+                      .extendMarkRange("link")
+                      .setLink({ href: url })
+                      .run();
+                  }
+                }}
+                disabled={!editor}
+              >
+                🔗 Link
+              </button>
+
+              <button
                 onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
                 disabled={!editor || !editor.state.selection.content().size}
               >
@@ -365,6 +391,8 @@ function AddNews() {
               >
                 • List
               </button>
+
+
 
             </div>
             {/* EDITOR */}
