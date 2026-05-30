@@ -107,9 +107,7 @@ function Dashboard() {
   const handleUpdateNews = async () => {
     try {
       await editNews(editingNews.newsId, {
-        title: editingNews.title,        // ✅ STRING (FIXED)
-        content: editingNews.content,    // ✅ STRING (FIXED)
-        styles: editingNews.styles
+        ...editingNews
       });
 
       toast.success("News updated successfully ✏️");
@@ -124,13 +122,13 @@ function Dashboard() {
 
   return (
     <>
-        <h1>Latest News</h1>
+      <h1>Latest News</h1>
 
 
       <p style={{ textAlign: "right", marginBottom: "20px", color: "#555" }}>
         Showing {news.length} of {total} news
       </p>
-     
+
 
       <div className="news-grid">
         {news.length === 0 ? (
@@ -189,6 +187,7 @@ function Dashboard() {
               }
             />
             {/* ✅ TITLE FIX */}
+            {/* 🔥 TITLE */}
             <h3>Title:</h3>
             <input
               value={editingNews.title || ""}
@@ -200,8 +199,56 @@ function Dashboard() {
               }
             />
 
-            <h3> Content:</h3>
-            {/* ✅ CONTENT FIX */}
+            {/* 🔥 LANGUAGE */}
+            <h3>Language:</h3>
+            <select
+              value={editingNews.language || "english"}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  language: e.target.value
+                })
+              }
+            >
+              <option value="english">English</option>
+              <option value="telugu">Telugu</option>
+            </select>
+
+            {/* 🔥 CATEGORY */}
+            <h3>Category:</h3>
+            <input
+              value={editingNews.categoryName || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  categoryName: e.target.value
+                })
+              }
+            />
+
+            {/* 🔥 IMAGE */}
+            <h3>Image URL:</h3>
+            <input
+              value={editingNews.mediaUrl || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  mediaUrl: e.target.value
+                })
+              }
+            />
+
+            {/* 🔥 PREVIEW */}
+            {editingNews.mediaUrl && (
+              <img
+                src={editingNews.mediaUrl}
+                alt="preview"
+                style={{ width: "100%", height: "150px", objectFit: "cover" }}
+              />
+            )}
+
+            {/* 🔥 CONTENT */}
+            <h3>Content:</h3>
             <textarea
               value={editingNews.content || ""}
               onChange={(e) =>
@@ -212,22 +259,123 @@ function Dashboard() {
               }
             />
 
+            {/* 🔥 EXPERT FIELDS */}
+            <h3>Expert Name:</h3>
+            <input
+              value={editingNews.expertName || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  expertName: e.target.value
+                })
+              }
+            />
 
+            <h3>Expert Role:</h3>
+            <input
+              value={editingNews.expertRole || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  expertRole: e.target.value
+                })
+              }
+            />
 
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={editingNews.mediaUrl}
-                alt="preview"
-                style={{
-                  width: "100%",
-                  height: "150px",
-                  objectFit: "cover",
-                  borderRadius: "8px"
-                }}
-              />
-            </div>
+            <h3>Expert Image:</h3>
+            <input
+              value={editingNews.expertImage || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  expertImage: e.target.value
+                })
+              }
+            />
 
-            <button
+            <h3>Short Bio:</h3>
+            <textarea
+              value={editingNews.shortBio || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  shortBio: e.target.value
+                })
+              }
+            />
+
+            {/* 🔥 STYLES */}
+            <h3>Title Font Size:</h3>
+            <input
+              value={editingNews.styles?.titleFontSize || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  styles: {
+                    ...editingNews.styles,
+                    titleFontSize: e.target.value
+                  }
+                })
+              }
+            />
+
+            <h3>Content Font Size:</h3>
+            <input
+              value={editingNews.styles?.contentFontSize || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  styles: {
+                    ...editingNews.styles,
+                    contentFontSize: e.target.value
+                  }
+                })
+              }
+            />
+
+            <h3>Font Family:</h3>
+            <input
+              value={editingNews.styles?.fontFamily || ""}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  styles: {
+                    ...editingNews.styles,
+                    fontFamily: e.target.value
+                  }
+                })
+              }
+            />
+
+            <h3>Title Color:</h3>
+            <input
+              type="color"
+              value={editingNews.styles?.titleColor || "#000000"}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  styles: {
+                    ...editingNews.styles,
+                    titleColor: e.target.value
+                  }
+                })
+              }
+            />
+
+            <h3>Content Color:</h3>
+            <input
+              type="color"
+              value={editingNews.styles?.contentColor || "#333333"}
+              onChange={(e) =>
+                setEditingNews({
+                  ...editingNews,
+                  styles: {
+                    ...editingNews.styles,
+                    contentColor: e.target.value
+                  }
+                })
+              }
+            />            <button
               className="primary-btn"
               onClick={handleUpdateNews}
             >
