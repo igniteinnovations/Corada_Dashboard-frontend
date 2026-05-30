@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
+import toast from "react-hot-toast";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -215,7 +216,7 @@ function AddNews() {
         }
       );
 
-      alert("✅ News created successfully");
+      toast.success("News created successfully");
 
       // 🔄 RESET FORM
       setTitle("");
