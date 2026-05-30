@@ -19,18 +19,21 @@ function Sidebar({ isOpen }) {
         </li>
 
         <li>
+          <NavLink to="/categories">
+            <Folder size={18} />
+            <span>Categories</span>
+          </NavLink>
+        </li>
+
+        
+        <li>
           <NavLink to="/add-news">
             <PlusCircle size={18} />
             <span>Add News</span>
           </NavLink>
         </li>
 
-        <li>
-          <NavLink to="/categories">
-            <Folder size={18} />
-            <span>Categories</span>
-          </NavLink>
-        </li>
+
 
         <li>
           <NavLink to="/ads">

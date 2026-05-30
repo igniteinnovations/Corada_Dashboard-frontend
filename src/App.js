@@ -38,8 +38,8 @@ function Layout() {
 
   return (
     <>
-      {/* ✅ TOASTER (GLOBAL) */}
-      <Toaster position="top-right" /> {/* 🔥 ADD THIS */}
+      {/* TOASTER (GLOBAL) */}
+      <Toaster position="top-right" />
 
       {/* SIDEBAR */}
       {!hideLayout && <Sidebar isOpen={isOpen} />}
@@ -69,21 +69,20 @@ function Layout() {
                 </ProtectedRoute>
               }
             />
-
-            <Route
-              path="/add-news"
-              element={
-                <ProtectedRoute>
-                  <AddNews />
-                </ProtectedRoute>
-              }
-            />
-
             <Route
               path="/categories"
               element={
                 <ProtectedRoute>
                   <Categories />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/add-news"
+              element={
+                <ProtectedRoute>
+                  <AddNews />
                 </ProtectedRoute>
               }
             />
