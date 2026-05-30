@@ -18,6 +18,7 @@ function WeekendExperiences() {
         mediaType: "image",
         mediaUrl: "",
         isFeatured: false,
+        link: "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -83,6 +84,7 @@ function WeekendExperiences() {
             tags: exp.tags ? exp.tags.join(", ") : "",
             mediaType: exp.mediaType || "image",
             mediaUrl: exp.mediaUrl || "",
+            link: exp.link || "",
             isFeatured: exp.isFeatured || false,
         });
 
@@ -102,7 +104,9 @@ function WeekendExperiences() {
             !form.duration ||
             !form.price ||
             !form.rating ||
-            !form.mediaUrl
+            !form.mediaUrl ||
+            !form.link
+
         ) {
             alert("All fields are required");
             return;
@@ -157,6 +161,7 @@ function WeekendExperiences() {
                 tags: "",
                 mediaType: "image",
                 mediaUrl: "",
+                link: "",
                 isFeatured: false,
             });
 
@@ -265,6 +270,12 @@ function WeekendExperiences() {
                             </select>
 
                             <input name="mediaUrl" value={form.mediaUrl} onChange={handleChange} placeholder="Media URL" />
+                            <input
+                                name="link"
+                                value={form.link}
+                                onChange={handleChange}
+                                placeholder="External Link (optional)"
+                            />
                             <input name="tags" value={form.tags} onChange={handleChange} placeholder="Tags (comma separated)" />
 
                             <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" />
