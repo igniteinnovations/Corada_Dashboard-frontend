@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import "../components/WeekendExperiences.css";
 
 function WeekendExperiences() {
     const [showForm, setShowForm] = useState(false);
@@ -185,7 +186,8 @@ function WeekendExperiences() {
             toast.error("Delete failed ❌");
         }
     };
-
+    const featuredExperiences = experiences.filter(e => e.isFeatured);
+    const normalExperiences = experiences.filter(e => !e.isFeatured);
     return (
         <>
             {/* HEADER */}
@@ -218,38 +220,75 @@ function WeekendExperiences() {
                 {experiences.length === 0 ? (
                     <div className="empty">✨ No experiences yet</div>
                 ) : (
-                    <div className="ads-scroll">
-                        {experiences.map((exp) => (
-                            <div key={exp._id} className="ad-card">
+                    <>
+                        {/* ⭐ FEATURED */}
+                        {experiences.filter(exp => exp.isFeatured).length > 0 && (
+                            <>
+                                <h3 style={{ marginBottom: "10px" }}>⭐ Featured Experiences</h3>
 
-                                <img src={exp.mediaUrl} alt="exp" />
+                                <div className="ads-scroll">
+                                    {experiences
+                                        .filter(exp => exp.isFeatured)
+                                        .map((exp) => (
+                                            <div key={exp._id} className="ad-card featured-card">
 
-                                <div className="ad-info">
-                                    <h4>{exp.title}</h4>
-                                    <p>📍 {exp.location}</p>
-                                    <p>⭐ {exp.rating}</p>
+                                                <img src={exp.mediaUrl} alt="exp" />
 
-                                    {exp.isFeatured && (
-                                        <span style={{ color: "green" }}>
-                                            ● Featured
-                                        </span>
-                                    )}
+                                                <div className="ad-info">
+                                                    <h4>⭐ {exp.title}</h4>
+                                                    <p>📍 {exp.location}</p>
+                                                    <p>⭐ {exp.rating}</p>
+
+                                                    <span className="featured-badge">Featured</span>
+                                                </div>
+
+                                                <div className="ad-actions">
+                                                    <button onClick={() => handleEdit(exp)}>✏️</button>
+                                                    <button
+                                                        className="delete-btn"
+                                                        onClick={() => handleDelete(exp.experienceId)}
+                                                    >
+                                                        🗑
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        ))}
                                 </div>
+                            </>
+                        )}
 
-                                {/* 🔥 ACTIONS */}
-                                <div className="ad-actions">
-                                    <button onClick={() => handleEdit(exp)}>✏️</button>
-                                    <button
-                                        className="delete-btn"
-                                        onClick={() => handleDelete(exp.experienceId)}
-                                    >
-                                        🗑
-                                    </button>
-                                </div>
+                        {/* 🧾 NORMAL */}
+                        <h3 style={{ marginTop: "20px" }}>All Experiences</h3>
 
-                            </div>
-                        ))}
-                    </div>
+                        <div className="ads-scroll">
+                            {experiences
+                                .filter(exp => !exp.isFeatured)
+                                .map((exp) => (
+                                    <div key={exp._id} className="ad-card">
+
+                                        <img src={exp.mediaUrl} alt="exp" />
+
+                                        <div className="ad-info">
+                                            <h4>{exp.title}</h4>
+                                            <p>📍 {exp.location}</p>
+                                            <p>⭐ {exp.rating}</p>
+                                        </div>
+
+                                        <div className="ad-actions">
+                                            <button onClick={() => handleEdit(exp)}>✏️</button>
+                                            <button
+                                                className="delete-btn"
+                                                onClick={() => handleDelete(exp.experienceId)}
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                ))}
+                        </div>
+                    </>
                 )}
             </div>
 
