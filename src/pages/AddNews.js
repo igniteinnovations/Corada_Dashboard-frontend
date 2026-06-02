@@ -5,6 +5,9 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import toast from "react-hot-toast";
+import Color from "@tiptap/extension-color";
+import TextStyle from "@tiptap/extension-text-style";
+import "../components/AddNews.css";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -39,6 +42,8 @@ function AddNews() {
     extensions: [
       StarterKit,
       Underline,
+      TextStyle,
+      Color,
       Link.configure({
         openOnClick: true,
       }),
@@ -352,6 +357,26 @@ function AddNews() {
                 disabled={!editor || !editor.state.selection.content().size}
               >
                 U
+              </button>
+
+
+              <label className="color-picker">
+                🎨
+                <input
+                  type="color"
+                  onChange={(e) =>
+                    editor?.chain().focus().setColor(e.target.value).run()
+                  }
+                />
+              </label>
+
+              <button
+                onClick={() =>
+                  editor?.chain().focus().setColor("#000000").run()
+                }
+                title="Reset Color"
+              >
+                Reset Color
               </button>
 
               <button
