@@ -1,12 +1,29 @@
 .color-picker {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #ff6b6b;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+  width: 45px;
+  height: 35px;
+  display: inline-flex;   /* important */
+  align-items: center;
+  justify-content: center;
+  background: #e57373;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;             /* remove extra space */
+  margin: 0;              /* ensure no shift */
+}
+
+.editor-toolbar button,
+.color-picker {
+  box-sizing: border-box;
+}
+.color-picker {
+  position: relative;
+  top: 1px;   /* tiny adjustment */
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;   /* keeps everything in same line */
 }
 
 .color-picker input {
