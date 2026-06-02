@@ -111,6 +111,14 @@ function AddNews() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (language === "telugu") {
+      setFontFamily('"Noto Sans Telugu", sans-serif');
+    } else {
+      setFontFamily("Arial");
+    }
+  }, [language]);
+
   // FILE UPLOAD
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -376,7 +384,7 @@ function AddNews() {
                 <option value="28px">28</option>
               </select>
 
-              
+
               <label className="color-picker">
                 🎨
                 <input
@@ -439,7 +447,9 @@ function AddNews() {
 
             </div>
             {/* EDITOR */}
-            <EditorContent editor={editor} />
+            <div style={{ fontFamily: fontFamily }}>
+              <EditorContent editor={editor} />
+            </div>
 
           </div>
 
@@ -462,11 +472,16 @@ function AddNews() {
           </select> */}
 
           <label>Font Family</label>
-          <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
+          <select
+            value={fontFamily}
+            onChange={(e) => setFontFamily(e.target.value)}
+          // disabled={language === "telugu"}
+          >
             <option value="Arial">Arial</option>
             <option value="Poppins">Poppins</option>
             <option value="Roboto">Roboto</option>
             <option value="Times New Roman">Times New Roman</option>
+            <option value='"Noto Sans Telugu", sans-serif'>Telugu Font</option>
           </select>
 
           <label>Title Color</label>

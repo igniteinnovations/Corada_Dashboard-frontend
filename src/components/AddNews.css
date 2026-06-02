@@ -1,114 +1,14 @@
-.color-picker {
-  width: 45px;
-  height: 35px;
-  display: inline-flex;   /* important */
-  align-items: center;
-  justify-content: center;
-  background: #e57373;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 0;             /* remove extra space */
-  margin: 0;              /* ensure no shift */
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap');
 
-.editor-toolbar button,
-.color-picker {
-  box-sizing: border-box;
-}
-.color-picker {
-  position: relative;
-  top: 1px;   /* tiny adjustment */
-}
-
+/* TOOLBAR */
 .editor-toolbar {
   display: flex;
-  align-items: center;   /* keeps everything in same line */
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.color-picker input {
-    display: none;
-}
-
-.editor-toolbar button {
-    height: 35px;
-    min-width: 45px;
-    padding: 6px;
-    border-radius: 5px;
-}
-
-.editor-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.editor-toolbar button:hover {
-    background: #d65c5c;
-}
-
-.editor-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    /* controls spacing */
-    flex-wrap: wrap;
-    /* prevents breaking */
-}
-
-.color-picker {
-    width: 50px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #e57373;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.color-picker input {
-    display: none;
-}
-
-.editor-toolbar select {
-  height: 35px;
-  width: auto !important;    /* slightly wider than buttons */
-  padding: 0 8px;
-  border-radius: 5px;
-  border: none;
-  background: #e57373;
-  color: white;
-  cursor: pointer;
-}
-
-.editor-toolbar select {
-  height: 35px;
-  padding: 6px 10px;
-  border-radius: 5px;
-  border: none;
-  background: #e57373;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.editor-toolbar select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.editor-toolbar select {
-  display: inline-block;
-}
-
-.editor-toolbar select {
-  background: #e57373 url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5z'/></svg>") no-repeat right 8px center;
-  background-size: 16px;
-  padding-right: 25px;
-}
-
+/* BUTTONS */
 .editor-toolbar button {
   height: 35px;
   min-width: 45px;
@@ -119,7 +19,51 @@
   color: white;
   cursor: pointer;
 
-  display: inline-flex;        /* 🔥 important */
-  align-items: center;         /* vertical center */
-  justify-content: center;     /* horizontal center */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editor-toolbar button:hover {
+  background: #d65c5c;
+}
+
+/* COLOR PICKER */
+.color-picker {
+  width: 45px;
+  height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e57373;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.color-picker input {
+  display: none;
+}
+
+/* DROPDOWN (SIZE) */
+.editor-toolbar select {
+  height: 35px;
+  width: auto;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  background: #e57373;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+
+  padding-right: 25px;
 }
