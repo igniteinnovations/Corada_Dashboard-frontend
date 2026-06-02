@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import Color from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import "../components/AddNews.css";
+import FontSize from "../components/FontSize";
 
 function AddNews() {
   const [mediaType, setMediaType] = useState("image");
@@ -44,6 +45,7 @@ function AddNews() {
       Underline,
       TextStyle,
       Color,
+      FontSize,
       Link.configure({
         openOnClick: true,
       }),
@@ -359,7 +361,22 @@ function AddNews() {
                 U
               </button>
 
+              <select
+                onChange={(e) =>
+                  editor?.chain().focus().setFontSize(e.target.value).run()
+                }
+              >
+                <option value="">Size</option>
+                <option value="12px">12</option>
+                <option value="14px">14</option>
+                <option value="16px">16</option>
+                <option value="18px">18</option>
+                <option value="20px">20</option>
+                <option value="24px">24</option>
+                <option value="28px">28</option>
+              </select>
 
+              
               <label className="color-picker">
                 🎨
                 <input
@@ -427,7 +444,6 @@ function AddNews() {
           </div>
 
           {/* 🎨 STYLE OPTIONS */}
-          {/* 🎨 STYLE OPTIONS */}
 
           <label>Title Font Size</label>
           <select value={titleFontSize} onChange={(e) => setTitleFontSize(e.target.value)}>
@@ -437,13 +453,13 @@ function AddNews() {
             <option value="36px">36px</option>
           </select>
 
-          <label>Content Font Size</label>
+          {/* <label>Content Font Size</label>
           <select value={contentFontSize} onChange={(e) => setContentFontSize(e.target.value)}>
             <option value="14px">14px</option>
             <option value="16px">16px</option>
             <option value="18px">18px</option>
             <option value="20px">20px</option>
-          </select>
+          </select> */}
 
           <label>Font Family</label>
           <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
@@ -460,12 +476,12 @@ function AddNews() {
             onChange={(e) => setTitleColor(e.target.value)}
           />
 
-          <label>Content Color</label>
+          {/* <label>Content Color</label>
           <input
             type="color"
             value={contentColor}
             onChange={(e) => setContentColor(e.target.value)}
-          />
+          /> */}
 
           <label>
             <input

@@ -70,3 +70,56 @@
 .color-picker input {
     display: none;
 }
+
+.editor-toolbar select {
+  height: 35px;
+  width: auto !important;    /* slightly wider than buttons */
+  padding: 0 8px;
+  border-radius: 5px;
+  border: none;
+  background: #e57373;
+  color: white;
+  cursor: pointer;
+}
+
+.editor-toolbar select {
+  height: 35px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  background: #e57373;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.editor-toolbar select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.editor-toolbar select {
+  display: inline-block;
+}
+
+.editor-toolbar select {
+  background: #e57373 url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5z'/></svg>") no-repeat right 8px center;
+  background-size: 16px;
+  padding-right: 25px;
+}
+
+.editor-toolbar button {
+  height: 35px;
+  min-width: 45px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  background: #e57373;
+  color: white;
+  cursor: pointer;
+
+  display: inline-flex;        /* 🔥 important */
+  align-items: center;         /* vertical center */
+  justify-content: center;     /* horizontal center */
+}
