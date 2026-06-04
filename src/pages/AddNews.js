@@ -370,6 +370,7 @@ function AddNews() {
               </button>
 
               <select
+                disabled={!editor}
                 onChange={(e) =>
                   editor?.chain().focus().setFontSize(e.target.value).run()
                 }
@@ -385,10 +386,14 @@ function AddNews() {
               </select>
 
 
-              <label className="color-picker">
+              <label
+                className={`color-picker ${!editor || !editor.state.selection.content().size ? "disabled" : ""
+                  }`}
+              >
                 🎨
                 <input
                   type="color"
+                  disabled={!editor || !editor.state.selection.content().size}
                   onChange={(e) =>
                     editor?.chain().focus().setColor(e.target.value).run()
                   }
@@ -396,10 +401,10 @@ function AddNews() {
               </label>
 
               <button
+                disabled={!editor || !editor.state.selection.content().size}
                 onClick={() =>
                   editor?.chain().focus().setColor("#000000").run()
                 }
-                title="Reset Color"
               >
                 Reset Color
               </button>
@@ -417,7 +422,7 @@ function AddNews() {
                       .run();
                   }
                 }}
-                disabled={!editor}
+                disabled={!editor || !editor.state.selection.content().size}
               >
                 🔗 Link
               </button>
@@ -447,7 +452,7 @@ function AddNews() {
 
             </div>
             {/* EDITOR */}
-            <div style={{ fontFamily: fontFamily }}>
+            <div className={language === "telugu" ? "telugu-font" : ""}>
               <EditorContent editor={editor} />
             </div>
 
@@ -481,7 +486,23 @@ function AddNews() {
             <option value="Poppins">Poppins</option>
             <option value="Roboto">Roboto</option>
             <option value="Times New Roman">Times New Roman</option>
-            <option value='"Noto Sans Telugu", sans-serif'>Telugu Font</option>
+            {language === "telugu" ? (
+              <>
+                <option value='"Noto Sans Telugu", sans-serif'>
+                  Noto Sans Telugu
+                </option>
+                <option value='"Noto Serif Telugu", serif'>
+                  Noto Serif Telugu
+                </option>
+              </>
+            ) : (
+              <>
+                <option value="Arial">Arial</option>
+                <option value="Poppins">Poppins</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Times New Roman">Times New Roman</option>
+              </>
+            )}
           </select>
 
           <label>Title Color</label>

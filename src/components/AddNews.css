@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap');
-
 /* TOOLBAR */
 .editor-toolbar {
   display: flex;
@@ -11,7 +9,7 @@
 /* BUTTONS */
 .editor-toolbar button {
   height: 35px;
-  min-width: 45px;
+  min-width: 45px;   /* ✅ flexible */
   padding: 6px 10px;
   border-radius: 5px;
   border: none;
@@ -22,10 +20,52 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
+  transition: background 0.2s ease, opacity 0.2s ease;
 }
 
-.editor-toolbar button:hover {
-  background: #d65c5c;
+/* BUTTON HOVER */
+.editor-toolbar button:not(:disabled):hover {
+  background: rgba(229, 115, 115, 0.6);
+}
+
+/* DISABLED BUTTON */
+.editor-toolbar button:disabled {
+  background: #e57373;
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* SELECT (SIZE ONLY) */
+.editor-toolbar select {
+  height: 35px;
+  width: 80px;   /* ✅ only dropdown fixed */
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  background: #e57373;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+
+  display: inline-flex;
+  align-items: center;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+
+  padding-right: 25px;
+}
+
+/* SELECT HOVER */
+.editor-toolbar select:not(:disabled):hover {
+  background: rgba(229, 115, 115, 0.6);
 }
 
 /* COLOR PICKER */
@@ -44,26 +84,14 @@
   display: none;
 }
 
-/* DROPDOWN (SIZE) */
-.editor-toolbar select {
-  height: 35px;
-  width: auto;
-  padding: 6px 10px;
-  border-radius: 5px;
-  border: none;
-  background: #e57373;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
+/* DISABLED COLOR PICKER */
+.color-picker.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 16px;
-
-  padding-right: 25px;
+/* EDITOR FONT */
+.ProseMirror {
+  font-family: inherit !important;
 }
