@@ -25,7 +25,7 @@ function Sidebar({ isOpen }) {
           </NavLink>
         </li>
 
-        
+
         <li>
           <NavLink to="/add-news">
             <PlusCircle size={18} />

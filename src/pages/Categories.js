@@ -66,7 +66,7 @@ function Categories() {
         }
       );
 
-        toast.success("Category added successfully!");
+      toast.success("Category added successfully!");
       setEnglishName("");
       setTeluguName("");
 

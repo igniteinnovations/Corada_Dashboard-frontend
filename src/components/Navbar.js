@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function Header({ toggle }) {  // ✅ FIX: receive toggle here
+function Header({ toggle }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
- const user = JSON.parse(localStorage.getItem("user")) || {};
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
-const username = user.name || "Admin User";
-const email = user.email || "admin@corada.news";
+  const username = user.name || "Admin User";
+  const email = user.email || "admin@corada.news";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -80,7 +80,7 @@ const email = user.email || "admin@corada.news";
               <div className="divider"></div>
 
               <button className="logout-btn" onClick={handleLogout}>
-                 Logout
+                Logout
               </button>
 
             </div>

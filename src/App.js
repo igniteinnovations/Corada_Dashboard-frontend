@@ -77,7 +77,7 @@ function Layout() {
                 </ProtectedRoute>
               }
             />
-            
+
             <Route
               path="/add-news"
               element={
