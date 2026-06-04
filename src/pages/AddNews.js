@@ -81,9 +81,10 @@ function AddNews() {
         return null;
       }
 
-      // 🔴 ORIGINAL DETAILS
-      console.log("🖼️ Original URL:", data.secure_url);
-      console.log(`📏 Original Size: ${data.width}px x ${data.height}px`);
+      // 🔴 ORIGINAL INFO
+      const originalSizeKB = (file.size / 1024).toFixed(2);
+      console.log(`📦 Original File Size: ${originalSizeKB} KB`);
+      console.log(`📏 Original: ${data.width}px x ${data.height}px`);
 
       // ✅ COMPRESSED + RESIZED
       const optimizedUrl = data.secure_url.replace(
@@ -91,9 +92,24 @@ function AddNews() {
         "/upload/f_auto,q_auto,w_1200/"
       );
 
-      // 🟢 FINAL DETAILS
-      console.log("⚡ Optimized URL:", optimizedUrl);
-      console.log(`✅ Compressed & resized: ${data.width}px → max 1200px`);
+      // 🟢 FETCH COMPRESSED SIZE
+      const optimizedRes = await fetch(optimizedUrl);
+      const blob = await optimizedRes.blob();
+      const optimizedSizeKB = (blob.size / 1024).toFixed(2);
+
+      // 🎯 RESULT
+      console.log(`⚡ Compressed Size: ${optimizedSizeKB} KB`);
+      console.log(
+        `📉 Reduction: ${(originalSizeKB - optimizedSizeKB).toFixed(2)} KB`
+      );
+      console.log(
+        `📊 Compression: ${(
+          ((originalSizeKB - optimizedSizeKB) / originalSizeKB) *
+          100
+        ).toFixed(2)}%`
+      );
+
+      console.log(`✅ Resized: ${data.width}px → max 1200px`);
 
       return optimizedUrl;
 
@@ -104,11 +120,15 @@ function AddNews() {
     }
   };
 
-
   // ✅ URL UPLOAD
   const uploadFromUrl = async (imageUrl) => {
     try {
       console.log("📤 Uploading URL to Cloudinary:", imageUrl);
+
+      // 🔴 GET ORIGINAL SIZE
+      const originalRes = await fetch(imageUrl);
+      const originalBlob = await originalRes.blob();
+      const originalSizeKB = (originalBlob.size / 1024).toFixed(2);
 
       const formData = new FormData();
       formData.append("file", imageUrl);
@@ -130,19 +150,33 @@ function AddNews() {
         return null;
       }
 
-      // 🔴 ORIGINAL DETAILS
-      console.log("🖼️ Original URL:", data.secure_url);
-      console.log(`📏 Original Size: ${data.width}px x ${data.height}px`);
+      console.log(`📦 Original Size: ${originalSizeKB} KB`);
+      console.log(`📏 Original: ${data.width}px x ${data.height}px`);
 
-      // ✅ COMPRESSED + RESIZED
+      // ✅ COMPRESSED
       const optimizedUrl = data.secure_url.replace(
         "/upload/",
         "/upload/f_auto,q_auto,w_1200/"
       );
 
-      // 🟢 FINAL DETAILS
-      console.log("⚡ Optimized URL:", optimizedUrl);
-      console.log(`✅ Compressed & resized: ${data.width}px → max 1200px`);
+      // 🟢 GET COMPRESSED SIZE
+      const optimizedRes = await fetch(optimizedUrl);
+      const blob = await optimizedRes.blob();
+      const optimizedSizeKB = (blob.size / 1024).toFixed(2);
+
+      // 🎯 RESULT
+      console.log(`⚡ Compressed Size: ${optimizedSizeKB} KB`);
+      console.log(
+        `📉 Reduction: ${(originalSizeKB - optimizedSizeKB).toFixed(2)} KB`
+      );
+      console.log(
+        `📊 Compression: ${(
+          ((originalSizeKB - optimizedSizeKB) / originalSizeKB) *
+          100
+        ).toFixed(2)}%`
+      );
+
+      console.log(`✅ Resized: ${data.width}px → max 1200px`);
 
       return optimizedUrl;
 
@@ -200,9 +234,6 @@ function AddNews() {
     setSelectedFile(file);
     setPreview(URL.createObjectURL(file));
   };
-
-  // URL INPUT
-
 
   // ✅ SUBMIT NEWS
   const handleSubmit = async () => {
@@ -485,7 +516,7 @@ function AddNews() {
               </button>
 
               <select
-                disabled={!editor}
+                disabled={!editor || !editor.state.selection.content().size}
                 onChange={(e) =>
                   editor?.chain().focus().setFontSize(e.target.value).run()
                 }

@@ -9,7 +9,7 @@
 /* BUTTONS */
 .editor-toolbar button {
   height: 35px;
-  min-width: 45px;   /* ✅ flexible */
+  min-width: 45px;
   padding: 6px 10px;
   border-radius: 5px;
   border: none;
@@ -21,25 +21,20 @@
   align-items: center;
   justify-content: center;
 
-  transition: background 0.2s ease, opacity 0.2s ease;
-}
-
-/* BUTTON HOVER */
-.editor-toolbar button:not(:disabled):hover {
-  background: rgba(229, 115, 115, 0.6);
+  transition: none; /* ❌ removed hover animation */
 }
 
 /* DISABLED BUTTON */
 .editor-toolbar button:disabled {
   background: #e57373;
-  opacity: 0.4;
+  opacity: 1; /* no fade */
   cursor: not-allowed;
 }
 
-/* SELECT (SIZE ONLY) */
+/* SELECT */
 .editor-toolbar select {
   height: 35px;
-  width: 80px;   /* ✅ only dropdown fixed */
+  width: 80px;
   padding: 6px 10px;
   border-radius: 5px;
   border: none;
@@ -61,11 +56,16 @@
   background-size: 16px;
 
   padding-right: 25px;
+
+  transition: none; /* ❌ removed hover animation */
 }
 
-/* SELECT HOVER */
-.editor-toolbar select:not(:disabled):hover {
-  background: rgba(229, 115, 115, 0.6);
+/* DISABLED SELECT */
+.editor-toolbar select:disabled {
+  opacity: 1;
+  color: white;
+  background: #e57373;
+  cursor: not-allowed;
 }
 
 /* COLOR PICKER */
@@ -78,6 +78,8 @@
   background: #e57373;
   border-radius: 5px;
   cursor: pointer;
+
+  transition: none; /* ❌ removed hover */
 }
 
 .color-picker input {
@@ -86,7 +88,7 @@
 
 /* DISABLED COLOR PICKER */
 .color-picker.disabled {
-  opacity: 0.4;
+  opacity: 1;
   cursor: not-allowed;
   pointer-events: none;
 }
