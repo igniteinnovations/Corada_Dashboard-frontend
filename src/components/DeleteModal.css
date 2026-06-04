@@ -42,7 +42,7 @@
 
 .cancel-btn {
   flex: 1;
-  background: #f1f1f1;
+  background: #f57c7c;
   padding: 10px;
   border-radius: 8px;
   border: none;
@@ -51,7 +51,8 @@
 }
 
 .cancel-btn:hover {
-  background: #ddd;
+transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
 }
 
 .delete-btn {
