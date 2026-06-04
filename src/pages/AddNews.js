@@ -56,28 +56,101 @@ function AddNews() {
   const [selectedFile, setSelectedFile] = useState(null);
 
   //Added Cloudnary
+  // ✅ FILE UPLOAD
   const uploadToCloudinary = async (file) => {
-    console.log("📤 Uploading file to Cloudinary:", file);
+    try {
+      console.log("📤 Uploading file to Cloudinary:", file);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "news_upload");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "news_upload");
 
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dljmnpj1i/image/upload",
-      {
-        method: "POST",
-        body: formData,
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dljmnpj1i/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.secure_url) {
+        console.log("❌ Cloudinary error (FILE):", data);
+        alert("Image upload failed");
+        return null;
       }
-    );
 
-    const data = await res.json();
+      // 🔴 ORIGINAL DETAILS
+      console.log("🖼️ Original URL:", data.secure_url);
+      console.log(`📏 Original Size: ${data.width}px x ${data.height}px`);
+
+      // ✅ COMPRESSED + RESIZED
+      const optimizedUrl = data.secure_url.replace(
+        "/upload/",
+        "/upload/f_auto,q_auto,w_1200/"
+      );
+
+      // 🟢 FINAL DETAILS
+      console.log("⚡ Optimized URL:", optimizedUrl);
+      console.log(`✅ Compressed & resized: ${data.width}px → max 1200px`);
+
+      return optimizedUrl;
+
+    } catch (err) {
+      console.log("❌ Upload error (FILE):", err);
+      alert("Upload failed");
+      return null;
+    }
+  };
 
 
-    console.log("✅ Cloudinary response:", data);
-    console.log("🌐 Image URL:", data.secure_url);
+  // ✅ URL UPLOAD
+  const uploadFromUrl = async (imageUrl) => {
+    try {
+      console.log("📤 Uploading URL to Cloudinary:", imageUrl);
 
-    return data.secure_url;
+      const formData = new FormData();
+      formData.append("file", imageUrl);
+      formData.append("upload_preset", "news_upload");
+
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dljmnpj1i/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.secure_url) {
+        alert("Invalid image URL");
+        console.log("❌ Cloudinary error (URL):", data);
+        return null;
+      }
+
+      // 🔴 ORIGINAL DETAILS
+      console.log("🖼️ Original URL:", data.secure_url);
+      console.log(`📏 Original Size: ${data.width}px x ${data.height}px`);
+
+      // ✅ COMPRESSED + RESIZED
+      const optimizedUrl = data.secure_url.replace(
+        "/upload/",
+        "/upload/f_auto,q_auto,w_1200/"
+      );
+
+      // 🟢 FINAL DETAILS
+      console.log("⚡ Optimized URL:", optimizedUrl);
+      console.log(`✅ Compressed & resized: ${data.width}px → max 1200px`);
+
+      return optimizedUrl;
+
+    } catch (err) {
+      console.log("❌ Upload error (URL):", err);
+      alert("Upload failed");
+      return null;
+    }
   };
 
   const handleUrlChange = (e) => {
@@ -161,15 +234,57 @@ function AddNews() {
         alert("Upload a file");
         return;
       }
+      console.log("👉 Calling uploadFromUrl with:", url); // ✅ ADD THIS
 
       mediaUrl = await uploadToCloudinary(selectedFile);
+
     } else {
       if (!url) {
         alert("Paste media URL");
         return;
       }
 
-      mediaUrl = url;
+      // 🔥 Upload URL to Cloudinary
+      // const uploadFromUrl = async (imageUrl) => {
+      //   try {
+      //     const formData = new FormData();
+      //     formData.append("file", imageUrl);
+      //     formData.append("upload_preset", "news_upload");
+
+      //     const res = await fetch(
+      //       "https://api.cloudinary.com/v1_1/dljmnpj1i/image/upload",
+      //       {
+      //         method: "POST",
+      //         body: formData,
+      //       }
+      //     );
+
+      //     const data = await res.json();
+
+      //     // ❌ If failed
+      //     if (!data.secure_url) {
+      //       alert("Invalid image URL. Please use direct image link (Unsplash, Imgur)");
+      //       console.log("Cloudinary error:", data);
+      //       return null;
+      //     }
+
+      //     // ✅ Optimize image
+      //     return data.secure_url.replace(
+      //       "/upload/",
+      //       "/upload/f_auto,q_auto/"
+      //     );
+
+      //   } catch (err) {
+      //     console.log("Upload error:", err);
+      //     alert("Image upload failed");
+      //     return null;
+      //   }
+      // };
+
+      mediaUrl = await uploadFromUrl(url);
+
+      // 🔥 STOP if upload failed
+      if (!mediaUrl) return;
     }
 
     // ✅ FIND CATEGORY
