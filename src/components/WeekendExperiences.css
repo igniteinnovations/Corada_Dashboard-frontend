@@ -1,12 +1,11 @@
 .featured-card {
   border: 2px solid gold;
   background: linear-gradient(135deg, #fffbea, #fff);
-  transform: scale(1.03);
+  transition: 0.2s;
 }
 
 .featured-card:hover {
   transform: scale(1.05);
-  transition: 0.2s;
 }
 
 .featured-badge {
@@ -18,4 +17,10 @@
   padding: 4px 8px;
   border-radius: 6px;
   font-weight: 600;
+}
+
+.featured-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }

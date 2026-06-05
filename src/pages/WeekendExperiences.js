@@ -226,7 +226,7 @@ function WeekendExperiences() {
                             <>
                                 <h3 style={{ marginBottom: "10px" }}>⭐ Featured Experiences</h3>
 
-                                <div className="ads-scroll">
+                              <div className="featured-container">
                                     {experiences
                                         .filter(exp => exp.isFeatured)
                                         .map((exp) => (
