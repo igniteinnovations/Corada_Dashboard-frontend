@@ -1,15 +1,17 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import AdItem from "../components/AdItem";
 import { createAd, getAds, editAd, deleteAd } from "../api/adsApi";
 import "../components/DeleteModal.css";
+import "../components/Ads.css";
+import ConfirmModal from "../components/ConfirmModal";
 
 function Ads() {
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [redirectUrl, setRedirectUrl] = useState("");
 
-  // ✅ NEW EDIT STATES (IMPORTANT)
   const [editTitle, setEditTitle] = useState("");
   const [editImageUrl, setEditImageUrl] = useState("");
   const [editRedirectUrl, setEditRedirectUrl] = useState("");
@@ -22,6 +24,15 @@ function Ads() {
   const [editingAd, setEditingAd] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedAdId, setSelectedAdId] = useState(null);
+
+  const [position, setPosition] = useState("");
+  const [editPosition, setEditPosition] = useState("");
+
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [editSelectedCategories, setEditSelectedCategories] = useState([]);
+
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // ✅ FETCH ADS
   const fetchAds = async () => {
@@ -43,7 +54,6 @@ function Ads() {
     try {
       await deleteAd(selectedAdId);
       toast.success("Ad deleted successfully ✅");
-
       setShowDeleteModal(false);
       setSelectedAdId(null);
       fetchAds();
@@ -55,34 +65,37 @@ function Ads() {
   // ✅ EDIT CLICK
   const handleEdit = (ad) => {
     setEditingAd(ad);
-
-    // 🔥 FILL EDIT STATE ONLY
     setEditTitle(ad.title || "");
     setEditImageUrl(ad.imageUrl || "");
     setEditRedirectUrl(ad.redirectUrl || "");
-
+    setEditPosition(ad.position || "");
+    setEditSelectedCategories(ad.categoryIds || []);
     setShowDrawer(true);
   };
 
-  // ✅ UPDATE AD
+  // ✅ UPDATE
   const handleUpdateAd = async () => {
     try {
       await editAd(editingAd.advertisementId, {
         title: editTitle,
         imageUrl: editImageUrl,
         redirectUrl: editRedirectUrl,
+        position: editPosition,
+        categoryIds: editSelectedCategories,
         isActive: true,
       });
+
 
       toast.success("Ad updated successfully ✨");
 
       setShowDrawer(false);
       setEditingAd(null);
 
-      // 🔥 CLEAR EDIT STATE ONLY
       setEditTitle("");
       setEditImageUrl("");
       setEditRedirectUrl("");
+      setEditPosition("");
+      setEditSelectedCategories([]);
 
       fetchAds();
     } catch {
@@ -90,15 +103,8 @@ function Ads() {
     }
   };
 
-  useEffect(() => {
-    fetchAds();
-  }, []);
-
-  // ✅ CREATE AD
+  // ✅ CREATE
   const handleAddAd = async () => {
-    setError("");
-    setSuccess("");
-
     if (!title || !imageUrl || !redirectUrl) {
       toast.error("All fields are required");
       return;
@@ -107,27 +113,55 @@ function Ads() {
     setLoading(true);
 
     try {
-      await createAd({
+      const res = await createAd({
         title,
         imageUrl,
         redirectUrl,
+        position,
+        categoryIds: selectedCategories,
         isActive: true,
       });
-
+      console.log("Response Data 👉", res.data);
       toast.success("Ad created successfully 🎉");
 
-      // 🔥 CLEAR ADD FORM ONLY
       setTitle("");
       setImageUrl("");
       setRedirectUrl("");
+      setPosition("");
+      setSelectedCategories([]);
 
       fetchAds();
-    } catch (err) {
+    } catch {
       setError("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+
+  // ✅ FETCH CATEGORIES
+  const fetchCategoriesList = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        "https://api.korada.news/api/v1/categories",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setCategoriesList(res.data.categories || []);
+    } catch (err) {
+      console.log("Category fetch error:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAds();
+    fetchCategoriesList();
+  }, []);
 
   return (
     <>
@@ -136,130 +170,137 @@ function Ads() {
 
       <div className="categories-layout">
 
-        {/* LEFT: ADD FORM */}
+        {/* ADD FORM */}
         <div className="card">
           <div className="card-header">
             <div className="bar"></div>
             <h3>Add New Ad</h3>
           </div>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          {success && <p style={{ color: "green" }}>{success}</p>}
-
           <label>Ad Title</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter ad title..."
-          />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} />
 
           <label>Image URL</label>
-          <input
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            placeholder="Enter image link..."
-          />
+          <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
 
           <label>Redirect Link</label>
-          <input
-            value={redirectUrl}
-            onChange={(e) => setRedirectUrl(e.target.value)}
-            placeholder="https://example.com"
-          />
+          <input value={redirectUrl} onChange={(e) => setRedirectUrl(e.target.value)} />
 
-          <button
-            className="primary-btn"
-            onClick={handleAddAd}
-            disabled={loading}
-          >
-            {loading ? "Adding..." : "+ Add Ad"}
+          <label>Position</label>
+          <input value={position} onChange={(e) => setPosition(e.target.value)} />
+
+          <label>Categories</label> <br />
+          {/* 🔥 DROPDOWN */}
+          <div className="dropdown">
+            <div
+              className="dropdown-btn"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              {selectedCategories.length > 0
+                ? `${selectedCategories.length} selected`
+                : "Select Categories"}
+            </div>
+
+            {showDropdown && (
+              <div className="dropdown-content">
+                {categoriesList.map((cat) => (
+                  <div
+                    key={cat._id}
+                    className="dropdown-item"
+                    onClick={() => {
+                      if (selectedCategories.includes(cat.categoryId)) {
+                        setSelectedCategories(
+                          selectedCategories.filter(
+                            (id) => id !== cat.categoryId
+                          )
+                        );
+                      } else {
+                        setSelectedCategories([
+                          ...selectedCategories,
+                          cat.categoryId,
+                        ]);
+                      }
+                    }}
+                  >
+
+
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(cat.categoryId)}
+                      readOnly
+                    />
+                    <span>
+                      {cat.englishName} / {cat.teluguName}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button className="primary-btn" onClick={handleAddAd}>
+            + Add Ad
           </button>
         </div>
 
-        {/* RIGHT: ADS LIST */}
+        {/* ADS LIST */}
         <div className="card">
           <div className="card-header space-between">
             <h3>All Ads</h3>
-            <span className="count">{ads.length} total</span>
+            <span>{ads.length} total</span>
           </div>
 
-          {ads.length === 0 ? (
-            <div className="empty">
-              <p>No ads available</p>
-            </div>
-          ) : (
-            <div className="ads-scroll">
-              {ads.map((ad) => (
-                <AdItem
-                  key={ad._id || ad.advertisementId}
-                  ad={ad}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                />
-              ))}
-            </div>
-          )}
+          <div className="ads-scroll">
+            {ads.map((ad) => (
+              <AdItem
+                key={ad._id || ad.advertisementId}
+                ad={ad}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/*  EDIT DRAWER */}
+      {/* EDIT DRAWER */}
       {showDrawer && (
         <div className="drawer-overlay" onClick={() => setShowDrawer(false)}>
           <div className="drawer" onClick={(e) => e.stopPropagation()}>
-
             <div className="drawer-header">
-              <h3>Edit Ad</h3>
-              <button onClick={() => setShowDrawer(false)}>✖</button>
+              <div className="drawer-header">
+                <h3>Edit Ad</h3>
+
+                <button
+                  className="close-btn"
+                  onClick={() => setShowDrawer(false)}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
-            <label>Ad Title</label>
-            <input
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-            />
+            <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+            <input value={editImageUrl} onChange={(e) => setEditImageUrl(e.target.value)} />
+            <input value={editRedirectUrl} onChange={(e) => setEditRedirectUrl(e.target.value)} />
+            <input value={editPosition} onChange={(e) => setEditPosition(e.target.value)} />
 
-            <label>Image URL</label>
-            <input
-              value={editImageUrl}
-              onChange={(e) => setEditImageUrl(e.target.value)}
-            />
+            <div className="drawer-actions">
 
-            <label>Redirect Link</label>
-            <input
-              value={editRedirectUrl}
-              onChange={(e) => setEditRedirectUrl(e.target.value)}
-            />
-
-            <button className="primary-btn" onClick={handleUpdateAd}>
-              Update Ad
-            </button>
-
-          </div>
-        </div>
-      )}
-
-      {/*  DELETE MODAL */}
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Delete Ad?</h3>
-            <p>Are you sure you want to delete this ad?</p>
-
-            <div className="modal-actions">
-              <button
-                className="cancel-btn"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancel
-              </button>
-
-              <button className="delete-btn" onClick={confirmDelete}>
-                Yes, Delete
+              <button className="update-btn" onClick={handleUpdateAd}>
+                Update Ad
               </button>
             </div>
           </div>
         </div>
+
       )}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDelete}
+        message="Are you sure you want to delete this ad?"
+      />
     </>
   );
 }

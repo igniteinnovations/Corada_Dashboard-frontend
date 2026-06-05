@@ -1,0 +1,161 @@
+.dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-btn {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  position: absolute;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 10;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;   /* ✅ vertical alignment fix */
+  gap: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-item input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.dropdown-item span {
+  line-height: 1.4;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.dropdown-item input:checked + span {
+  color: #e57373;
+  font-weight: 500;
+}
+
+.dropdown-content {
+  position: absolute;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 999;
+}
+
+.dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%; /* 👈 push below input */
+  left: 0;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 9999; /* 👈 force on top */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card,
+.categories-layout,
+.ads-scroll {
+  overflow: visible !important;
+}
+
+.dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 99999;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* RED CROSS BUTTON */
+.close-btn {
+  background: #e50914;   /* red */
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;   /* rounded square */
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* hover effect */
+.close-btn:hover {
+  background: #c40812;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  width: 100%;              /* 🔥 IMPORTANT */
+}
+
+/* push button to right */
+.close-btn {
+  margin-left: auto;        /* 🔥 THIS pushes it to right end */
+
+  background: #e50914;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
