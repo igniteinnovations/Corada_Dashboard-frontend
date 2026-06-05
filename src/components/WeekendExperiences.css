@@ -24,3 +24,50 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
+
+.featured-wrapper {
+  max-height: 500px; /* adjust based on 6 cards */
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* grid layout */
+.featured-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* scrollbar styling (optional 🔥) */
+.featured-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.featured-wrapper::-webkit-scrollbar-thumb {
+  background: gold;
+  border-radius: 10px;
+}
+
+/* wrapper controls scroll */
+.normal-wrapper {
+  max-height: 340px; /* shows exactly 4 cards */
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* grid layout (2 cards per row) */
+.normal-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* scrollbar styling */
+.normal-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.normal-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}

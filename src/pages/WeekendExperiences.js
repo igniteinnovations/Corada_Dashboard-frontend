@@ -226,7 +226,8 @@ function WeekendExperiences() {
                             <>
                                 <h3 style={{ marginBottom: "10px" }}>⭐ Featured Experiences</h3>
 
-                              <div className="featured-container">
+                             <div className="featured-wrapper">
+                                 <div className="featured-container">
                                     {experiences
                                         .filter(exp => exp.isFeatured)
                                         .map((exp) => (
@@ -255,13 +256,15 @@ function WeekendExperiences() {
                                             </div>
                                         ))}
                                 </div>
+                             </div>
                             </>
                         )}
 
                         {/* 🧾 NORMAL */}
                         <h3 style={{ marginTop: "20px" }}>All Experiences</h3>
 
-                        <div className="ads-scroll">
+                        <div className="normal-wrapper">
+  <div className="normal-container">
                             {experiences
                                 .filter(exp => !exp.isFeatured)
                                 .map((exp) => (
@@ -287,6 +290,7 @@ function WeekendExperiences() {
 
                                     </div>
                                 ))}
+                        </div>
                         </div>
                     </>
                 )}
