@@ -159,3 +159,17 @@
   align-items: center;
   justify-content: center;
 }
+
+/* wrapper controls visible area */
+.ads-wrapper {
+  max-height: 450px;   /* adjust → shows ~4–5 ads */
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* layout inside (2 cards per row) */
+.ads-scroll {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}

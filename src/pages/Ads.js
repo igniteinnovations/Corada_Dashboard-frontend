@@ -250,7 +250,8 @@ function Ads() {
             <span>{ads.length} total</span>
           </div>
 
-          <div className="ads-scroll">
+         <div className="ads-wrapper">
+           <div className="ads-scroll">
             {ads.map((ad) => (
               <AdItem
                 key={ad._id || ad.advertisementId}
@@ -260,6 +261,7 @@ function Ads() {
               />
             ))}
           </div>
+         </div>
         </div>
       </div>
 
