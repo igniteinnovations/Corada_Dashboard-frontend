@@ -226,37 +226,37 @@ function WeekendExperiences() {
                             <>
                                 <h3 style={{ marginBottom: "10px" }}>⭐ Featured Experiences</h3>
 
-                             <div className="featured-wrapper">
-                                 <div className="featured-container">
-                                    {experiences
-                                        .filter(exp => exp.isFeatured)
-                                        .map((exp) => (
-                                            <div key={exp._id} className="ad-card featured-card">
+                                <div className="featured-wrapper">
+                                    <div className="featured-container">
+                                        {experiences
+                                            .filter(exp => exp.isFeatured)
+                                            .map((exp) => (
+                                                <div key={exp._id} className="ad-card featured-card">
 
-                                                <img src={exp.mediaUrl} alt="exp" />
+                                                    <img src={exp.mediaUrl} alt="exp" />
 
-                                                <div className="ad-info">
-                                                    <h4>⭐ {exp.title}</h4>
-                                                    <p>📍 {exp.location}</p>
-                                                    <p>⭐ {exp.rating}</p>
+                                                    <div className="ad-info">
+                                                        <h4>⭐ {exp.title}</h4>
+                                                        <p>📍 {exp.location}</p>
+                                                        <p>⭐ {exp.rating}</p>
 
-                                                    <span className="featured-badge">Featured</span>
+                                                        <span className="featured-badge">Featured</span>
+                                                    </div>
+
+                                                    <div className="ad-actions">
+                                                        <button onClick={() => handleEdit(exp)}>✏️</button>
+                                                        <button
+                                                            className="delete-btn"
+                                                            onClick={() => handleDelete(exp.experienceId)}
+                                                        >
+                                                            🗑
+                                                        </button>
+                                                    </div>
+
                                                 </div>
-
-                                                <div className="ad-actions">
-                                                    <button onClick={() => handleEdit(exp)}>✏️</button>
-                                                    <button
-                                                        className="delete-btn"
-                                                        onClick={() => handleDelete(exp.experienceId)}
-                                                    >
-                                                        🗑
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                        ))}
+                                            ))}
+                                    </div>
                                 </div>
-                             </div>
                             </>
                         )}
 
@@ -264,33 +264,33 @@ function WeekendExperiences() {
                         <h3 style={{ marginTop: "20px" }}>All Experiences</h3>
 
                         <div className="normal-wrapper">
-  <div className="normal-container">
-                            {experiences
-                                .filter(exp => !exp.isFeatured)
-                                .map((exp) => (
-                                    <div key={exp._id} className="ad-card">
+                            <div className="normal-container">
+                                {experiences
+                                    .filter(exp => !exp.isFeatured)
+                                    .map((exp) => (
+                                        <div key={exp._id} className="ad-card">
 
-                                        <img src={exp.mediaUrl} alt="exp" />
+                                            <img src={exp.mediaUrl} alt="exp" />
 
-                                        <div className="ad-info">
-                                            <h4>{exp.title}</h4>
-                                            <p>📍 {exp.location}</p>
-                                            <p>⭐ {exp.rating}</p>
+                                            <div className="ad-info">
+                                                <h4>{exp.title}</h4>
+                                                <p>📍 {exp.location}</p>
+                                                <p>⭐ {exp.rating}</p>
+                                            </div>
+
+                                            <div className="ad-actions">
+                                                <button onClick={() => handleEdit(exp)}>✏️</button>
+                                                <button
+                                                    className="delete-btn"
+                                                    onClick={() => handleDelete(exp.experienceId)}
+                                                >
+                                                    🗑
+                                                </button>
+                                            </div>
+
                                         </div>
-
-                                        <div className="ad-actions">
-                                            <button onClick={() => handleEdit(exp)}>✏️</button>
-                                            <button
-                                                className="delete-btn"
-                                                onClick={() => handleDelete(exp.experienceId)}
-                                            >
-                                                🗑
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                ))}
-                        </div>
+                                    ))}
+                            </div>
                         </div>
                     </>
                 )}

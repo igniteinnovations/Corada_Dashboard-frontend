@@ -606,13 +606,13 @@ function AddNews() {
 
           {/* 🎨 STYLE OPTIONS */}
 
-          <label>Title Font Size</label>
+          {/* <label>Title Font Size</label>
           <select value={titleFontSize} onChange={(e) => setTitleFontSize(e.target.value)}>
             <option value="24px">24px</option>
             <option value="28px">28px</option>
             <option value="32px">32px</option>
             <option value="36px">36px</option>
-          </select>
+          </select> */}
 
           {/* <label>Content Font Size</label>
           <select value={contentFontSize} onChange={(e) => setContentFontSize(e.target.value)}>
@@ -622,7 +622,7 @@ function AddNews() {
             <option value="20px">20px</option>
           </select> */}
 
-          <label>Font Family</label>
+          {/* <label>Font Family</label>
           <select
             value={fontFamily}
             onChange={(e) => setFontFamily(e.target.value)}
@@ -656,7 +656,7 @@ function AddNews() {
             type="color"
             value={titleColor}
             onChange={(e) => setTitleColor(e.target.value)}
-          />
+          /> */}
 
           {/* <label>Content Color</label>
           <input
@@ -665,7 +665,7 @@ function AddNews() {
             onChange={(e) => setContentColor(e.target.value)}
           /> */}
 
-          <label>
+          {/* <label>
             <input
               type="checkbox"
               checked={isBold}
@@ -681,7 +681,7 @@ function AddNews() {
               onChange={(e) => setIsItalic(e.target.checked)}
             />
             Italic
-          </label>
+          </label> */}
 
           {/* MEDIA TYPE */}
           <label>Media Type</label>
